@@ -8,14 +8,13 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="652.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxAlbumit.AlbumitGUIController">
@@ -25,8 +24,8 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <Button mnemonicParsing="false" text="Uusi albumi" />
-            <Button mnemonicParsing="false" text="Tallenna" />
+            <Button mnemonicParsing="false" onAction="#handleUusiAlbumi" text="Uusi albumi" />
+            <Button mnemonicParsing="false" onAction="#handleTallenna" text="Tallenna" />
          </children>
       </HBox>
    </bottom>
@@ -35,17 +34,21 @@
         <menus>
           <Menu mnemonicParsing="false" text="Tiedosto">
             <items>
-              <MenuItem mnemonicParsing="false" text="Sulje" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleUusiAlbumi" text="Uusi albumi" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleTallenna" text="Tallenna" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleTulosta" text="Tulosta" />
+              <MenuItem mnemonicParsing="false" onAction="#handleSulje" text="Sulje" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Muokkaa">
             <items>
-              <MenuItem mnemonicParsing="false" text="Poista" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMuokkaaAlbumia" text="Muokkaa albumia" />
+              <MenuItem mnemonicParsing="false" onAction="#handlePoista" text="Poista" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Apua">
             <items>
-              <MenuItem mnemonicParsing="false" text="Tietoa" />
+              <MenuItem mnemonicParsing="false" onAction="#handleTietoja" text="Tietoja" />
             </items>
           </Menu>
         </menus>
@@ -57,60 +60,58 @@
             <Label text="Albumit" BorderPane.alignment="CENTER" />
          </top>
          <center>
-            <ListChooser rivit="Hilipatipippaa&#10;Piut paut&#10;Silirimpsis&#10;&#10;" BorderPane.alignment="CENTER" />
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TextField />
+                  <Button mnemonicParsing="false" onAction="#handleHae" text="Hae" />
+                  <ListChooser rivit="Hilipatipippaa&#10;Piut paut&#10;Silirimpsis&#10;&#10;" />
+               </children>
+            </VBox>
          </center>
       </BorderPane>
    </left>
    <center>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
-            <SplitPane dividerPositions="0.3663194444444444" orientation="VERTICAL" prefHeight="578.0" prefWidth="383.0">
-              <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="274.0" prefWidth="381.0">
+            <VBox>
+               <children>
+                  <GridPane hgap="10.0" prefHeight="190.0" prefWidth="366.0">
+                     <columnConstraints>
+                        <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" maxWidth="203.0" minWidth="10.0" prefWidth="75.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="266.0" minWidth="0.0" prefWidth="261.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <padding>
+                        <Insets left="10.0" right="10.0" top="10.0" />
+                     </padding>
                      <children>
-                        <GridPane hgap="10.0" prefHeight="190.0" prefWidth="366.0">
-                           <columnConstraints>
-                              <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" maxWidth="203.0" minWidth="10.0" prefWidth="75.0" />
-                              <ColumnConstraints hgrow="ALWAYS" maxWidth="266.0" minWidth="0.0" prefWidth="261.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                           <padding>
-                              <Insets left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <children>
-                              <Label text="Albumi" />
-                              <Label text="Artisti" GridPane.rowIndex="1" />
-                              <Label text="Julkaisu" GridPane.rowIndex="2" />
-                              <Label text="Levyyhtiö" GridPane.rowIndex="3" />
-                              <Label text="Formaatti" GridPane.rowIndex="4" />
-                              <Label text="Lisätietoja" GridPane.rowIndex="5" />
-                              <TextField text="Hilipatipippaa" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-                              <TextField text="Lordi" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-                              <TextField text="1976" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-                              <TextField text="Universal" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-                              <TextField text="LP" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
-                              <TextField prefWidth="261.0" text="Dominoi listoja olemalla neljä vuotta myydyin albumi" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
-                           </children>
-                        </GridPane>
+                        <Label text="Albumi" />
+                        <Label text="Artisti" GridPane.rowIndex="1" />
+                        <Label text="Julkaisu" GridPane.rowIndex="2" />
+                        <Label text="Levyyhtiö" GridPane.rowIndex="3" />
+                        <Label text="Formaatti" GridPane.rowIndex="4" />
+                        <Label text="Lisätietoja" GridPane.rowIndex="5" />
+                        <TextField text="Hilipatipippaa" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                        <TextField text="Lordi" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                        <TextField text="1976" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                        <TextField text="Universal" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                        <TextField text="LP" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
+                        <TextField prefWidth="261.0" text="Dominoi listoja olemalla neljä vuotta myydyin albumi" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
                      </children>
-                  </AnchorPane>
-                  <GridPane prefHeight="206.0" prefWidth="381.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="61.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </GridPane>
+                  <GridPane>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="61.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
+                     </columnConstraints>
+                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -121,7 +122,11 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
                      <children>
                         <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -208,8 +213,8 @@
                         </Label>
                      </children>
                   </GridPane>
-              </items>
-            </SplitPane>
+               </children>
+            </VBox>
          </content>
       </ScrollPane>
    </center>

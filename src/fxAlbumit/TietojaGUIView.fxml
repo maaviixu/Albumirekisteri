@@ -9,10 +9,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane prefHeight="225.0" prefWidth="261.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="fxAlbumit.TietojaGUIController">
+<BorderPane prefHeight="225.0" prefWidth="261.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxAlbumit.TietojaGUIController">
    <bottom>
-      <Button mnemonicParsing="false" text="OK" BorderPane.alignment="BOTTOM_RIGHT">
+      <Button mnemonicParsing="false" onAction="#handleSulje" text="OK" BorderPane.alignment="BOTTOM_RIGHT">
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="7.0" top="5.0" />
          </BorderPane.margin>
