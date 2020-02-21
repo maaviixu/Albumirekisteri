@@ -29,12 +29,16 @@ public class Albumi {
 		return nimi;
 	}
 	
+	
+	/**
+	 * Tekee testialbumin
+	 */
 	public void vastaaAlbumi() {
-		nimi = "Jyt‰kes‰" + " " + rand(1000, 9999);
+		nimi = "Jyt√§kes√§" + " " + rand(1000, 9999);
 		julkaisuVuosi = 1962;
 		formaatti = "LP";
 		yhtio = "Matulan valinta";
-		lisatietoja = "Kes‰ -62 j‰i monen mieleen niin kuin t‰m‰ albumikin";
+		lisatietoja = "Kes√§ -62 j√§i monen mieleen niin kuin t√§m√§ albumikin";
 	}
 	
 	/**
@@ -83,7 +87,7 @@ public class Albumi {
 	
 	/**
 	 * 
-	 * @param args ei k‰ytˆss‰
+	 * @param args ei k√§yt√∂ss√§
 	 */
 	public static void main(String args[]) {
 		Albumi levy = new Albumi(), levy2 = new Albumi();

@@ -27,6 +27,7 @@ public class AlbumitMain extends Application {
 			scene.getStylesheets().add(getClass().getResource("albumit.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Albumit");
+			primaryStage.show();
 			
 			Rekisteri rekisteri = new Rekisteri();
 			albumitGUICtrl.setRekisteri(rekisteri);
@@ -40,7 +41,7 @@ public class AlbumitMain extends Application {
 	}
 	
 	/**
-	 * @param args ei k‰ytˆss‰
+	 * @param args ei k√§yt√∂ss√§
 	 */
 	public static void main(String[] args) {
 		launch(args);

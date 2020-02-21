@@ -40,8 +40,9 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 @FXML
 	 void handleUusiAlbumi() {
-		 ModalController.showModal(AlbumitGUIController.class.getResource("MuokkaaGUIView.fxml"),
-				 "Albumi", null, "");
+		 uusiAlbumi();
+		 //ModalController.showModal(AlbumitGUIController.class.getResource("MuokkaaGUIView.fxml"),
+		//		 "Albumi", null, "");
 	 }
 	 
 	 @FXML
@@ -87,8 +88,8 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 /**
 	  * Tekee tarvittavat muut alustukset, nyt vaihdetaan GridPanen tilalle
-	  * yksi iso tekstikenttä, johon voidaan tulostaa albumien tiedot.
-	  * Alustetaan myös albumilistan kuuntelija
+	  * yksi iso tekstikenttï¿½, johon voidaan tulostaa albumien tiedot.
+	  * Alustetaan myï¿½s albumilistan kuuntelija
 	  */
 	 protected void alusta() {
 		 panelAlbumi.setContent(areaAlbumi);
@@ -101,7 +102,7 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 
 	 /**
-	  * Näyttää lsitasta valitun albumin tiedot, tilapäisesti yhteen isoon edit-kenttään
+	  * Nï¿½yttï¿½ï¿½ lsitasta valitun albumin tiedot, tilapï¿½isesti yhteen isoon edit-kenttï¿½ï¿½n
 	  */
 	 protected void naytaAlbumi() {
 		 albumiKohdalla = chooserAlbumit.getSelectedObject();
@@ -120,7 +121,7 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 /**
 	  * Hakee albumien tiedot listaan 
-	  * @param jnro albumin numero, joka aktivoidaan haun jälkeen
+	  * @param jnro albumin numero, joka aktivoidaan haun jï¿½lkeen
 	  */
 	 protected void hae(int jnro) {
 		 chooserAlbumit.clear();
@@ -131,7 +132,7 @@ public class AlbumitGUIController implements Initializable {
 			 if ( albumi.getTunnusNro() == jnro) index = i;
 			 chooserAlbumit.add(albumi.getNimi(), albumi);
 		 }
-		 chooserAlbumit.setSelectedIndex(index); // tästä tulee muutosviesti joka näyttää jäsenen
+		 chooserAlbumit.setSelectedIndex(index); // tï¿½stï¿½ tulee muutosviesti joka nï¿½yttï¿½ï¿½ jï¿½senen
 	 }
 	 
 	 /**
@@ -152,23 +153,23 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 
 	 private void hae() {
-		 Dialogs.showMessageDialog("Haetaan albumit! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Haetaan albumit! Mutta ei toimi vielï¿½");
 	 }
 	 
 	 private void tulosta() {
-		 Dialogs.showMessageDialog("Tulostetaan! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Tulostetaan! Mutta ei toimi vielï¿½");
 	 }
 	 
 	 private void sulje() {
-		 Dialogs.showMessageDialog("Suljetaan ohjelma! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Suljetaan ohjelma! Mutta ei toimi vielï¿½");
 	 }
 	 
 	 private void poista() {
-		 Dialogs.showMessageDialog("Poistetaan albumi! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Poistetaan albumi! Mutta ei toimi vielï¿½");
 	 }
 	 
 	 private void tallenna() {
-		 Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi vielï¿½");
 	 }
 	 
 	 public void setRekisteri(Rekisteri rekisteri) {
