@@ -99,21 +99,15 @@ public class Albumit {
 		try {
 			albumit.lisaa(levy);
 			albumit.lisaa(levy2);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
-			albumit.lisaa(levy);
+			
+			
 			
 			
 			System.out.println("============= Albumit testi =================");
 			
 			for ( int i = 0; i < albumit.getLkm(); i++) {
 				Albumi albumi = albumit.anna(i);
-				System.out.println("Jäsen nro: " + i);
+				System.out.println("Albumi nro: " + i);
 				albumi.tulosta(System.out);
 			}
 			
