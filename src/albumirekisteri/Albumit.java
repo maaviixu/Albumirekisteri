@@ -3,7 +3,7 @@ package albumirekisteri;
 
 
 /**
- * Albumirekisterin albumit, joka osaa mm. lis‰t‰ uuden albumin
+ * Albumirekisterin albumit, joka osaa mm. lis√§t√§ uuden albumin
  * @author maaviixu
  *
  */
@@ -18,16 +18,35 @@ public class Albumit {
 	 * Oletusmuodostaja
 	 */
 	public Albumit() {
-		// Atribuuttien oma alustus riitt‰‰
+		// Atribuuttien oma alustus riitt√§√§
 	}
 	
 	
 	/**
-	 * Lis‰‰ uuden albumin tietorakenteeseen. Ottaa j‰senen omistukseensa.
-	 * @param albumi lis‰tt‰v‰n j‰senen viite. Huom tietorakenne muuttuu omistajaksi
+	 * Lis√§√§ uuden albumin tietorakenteeseen. Ottaa j√§senen omistukseensa.
+	 * @param albumi lis√§tt√§v√§n albumin viite. Huom tietorakenne muuttuu omistajaksi
+	 * @throws SailoException jos tietorakenne on jo t√§ynn√§
 	 * @example
 	 * <pre name="test">
-	 * 
+	 * #THROWS SailoException
+	 * Albumit albumit = new Albumit();
+	 * Albumi levy1 = new Albumi(), levy2 = new Albumi();
+	 * albumit.getLkm() === 0;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 1;
+	 * albumit.lisaa(levy2); albumit.getLkm() === 2;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 3;
+	 * albumit.anna(0) === levy1;
+	 * albumit.anna(1) === levy2;
+	 * albumit.anna(2) === levy1;
+	 * albumit.anna(1) == levy1 === false;
+	 * albumit.anna(1) == levy2 === true;
+	 * albumit.anna(3) === levy1; #THROWS IndexOutOfBoundsException
+	 * albumit.lisaa(levy1); albumit.getLkm() === 4;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 5;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 6;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 7;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 8;
+	 * albumit.lisaa(levy1); #THROWS SailoException
 	 * </pre>
 	 */
 	public void lisaa(Albumi albumi) throws SailoException {
@@ -40,7 +59,7 @@ public class Albumit {
 	/**
 	 * Palauttaa viitteen i:teen albumiin
 	 * @param i monennenko albumin viite halutaan
-	 * @return viite j‰seneen, jonka indeksi on i
+	 * @return viite j√§seneen, jonka indeksi on i
 	 * @throws IndexOutOfBoundException jos ei ole sallitulla alueella
 	 */
 	public Albumi anna(int i) throws IndexOutOfBoundsException {
@@ -53,26 +72,26 @@ public class Albumit {
 	/**
 	 * Lukee albumeiden tiedostosta. Kesken
 	 * @param hakemisto tiedoston hakemisto
-	 * @throws SailoException jos lukeminen ep‰onnistuu
+	 * @throws SailoException jos lukeminen epÔøΩonnistuu
 	 */
 	public void lueTiedostosta(String hakemisto) throws SailoException {
 		tiedostonNimi = hakemisto + "/albumit.dat";
-		throw new SailoException("Ei osata lukea viel‰ tiedostoa " + tiedostonNimi);		
+		throw new SailoException("Ei osata lukea vielÔøΩ tiedostoa " + tiedostonNimi);		
 	}
 	
 	
 	/**
 	 * Tallentaa albumeiden tiedostoon. Kesken.
-	 * @throws SailoException jos tallentaminen ep‰onnistuu
+	 * @throws SailoException jos tallentaminen epÔøΩonnistuu
 	 */
 	public void tallenna() throws SailoException {
-		throw new SailoException("Ei osata viel‰ tallentaa tiedostoa " + tiedostonNimi);		
+		throw new SailoException("Ei osata vielÔøΩ tallentaa tiedostoa " + tiedostonNimi);		
 	}
 	
 	
 	/**
-	 * Palauttaa rekisterin albumeiden m‰‰r‰n.
-	 * @return albumeiden lukum‰‰r‰.
+	 * Palauttaa albumeiden lukum√§√§r√§n.
+	 * @return albumeiden lukum√§√§r√§
 	 */
 	public int getLkm() {
 		return lkm;
@@ -85,7 +104,7 @@ public class Albumit {
 	
 	/**
 	 * Testiohjelma albumeille
-	 * @param args ei k‰ytˆss‰
+	 * @param args ei k√§yt√∂ss√§
 	 */
 	public static void main(String args[]) {
 		Albumit albumit = new Albumit();

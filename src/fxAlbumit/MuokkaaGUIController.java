@@ -1,7 +1,6 @@
 package fxAlbumit;
 
 import fi.jyu.mit.fxgui.Dialogs;
-import fi.jyu.mit.fxgui.ModalController;
 import fi.jyu.mit.fxgui.ModalControllerInterface;
 import javafx.fxml.FXML;
 
@@ -49,15 +48,15 @@ public class MuokkaaGUIController implements ModalControllerInterface<String> {
 	//==============================================
 	
 	private void tallenna() {
-		 Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi vielï¿½");
 	 }
 	
 	private void lisaaKappale() {
-		 Dialogs.showMessageDialog("Lisätään slotti uudelle kappaleelle! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Lisï¿½tï¿½ï¿½n slotti uudelle kappaleelle! Mutta ei toimi vielï¿½");
 	}
 	
 	private void kumoa() {
-		 Dialogs.showMessageDialog("Kumotaan muokkaukset! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Kumotaan muokkaukset! Mutta ei toimi vielï¿½");
 
 	}
 

@@ -11,8 +11,8 @@ public class Rekisteri {
 	private final Albumit albumit = new Albumit();
 	
 	/**
-	 * Palauttaa rekisterin albumeiden määrän
-	 * @return albumeiden määrä
+	 * Palauttaa rekisterin albumeiden lukumÃ¤Ã¤rÃ¤n
+	 * @return albumeiden lukumÃ¤Ã¤rÃ¤
 	 */
 	public int getAlbumit() {
 		return albumit.getLkm();		
@@ -23,7 +23,7 @@ public class Rekisteri {
 	 * Poistaa albumeista, artisteista ja kappaleista ne joilla on nro.
 	 * Kesken.
 	 * @param nro viitenumero , jonka mukaan poistetaan
-	 * @return montako jäsentä poistettiin
+	 * @return montako poistettiin
 	 */
 	public int poista(@SuppressWarnings("unused") int nro) {
 		return 0;
@@ -31,12 +31,29 @@ public class Rekisteri {
 	
 	
 	/**
-	 * Lisää rekisteriin uuden albumin.
-	 * @param albumi lisättävä albumi
-	 * @throws SailoException jos lisäystä ei voida tehdä
+	 * LisÃ¤Ã¤ rekisteriin uuden albumin.
+	 * @param albumi lisÃ¤ttÃ¤vÃ¤ albumi
+	 * @throws SailoException jos lisÃ¤ystÃ¤ ei voida tehdÃ¤
 	 * @example
 	 * <pre name="test">
-	 * 
+	 * #THROWS SailoException
+	 * Rekisteri rekisteri = new Rekisteri();
+	 * Albumi levy1 = new Albumi(), levy2 = new Albumi();
+	 * levy1.rekisteroi(); levy2.rekisteroi();
+	 * rekisteri.getAlbumit() === 0;
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 1;
+	 * rekisteri.lisaa(levy2); rekisteri.getAlbumit() === 2;
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 3;
+	 * rekisteri.annaAlbumi(0) === levy1;
+	 * rekisteri.annaAlbumi(1) === levy2;
+	 * rekisteri.annaAlbumi(2) === levy1;
+	 * rekisteri.annaAlbumi(3) === levy1; #THROWS IndexOutOfBoundsException 
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 4;
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 5;
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 6;
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 7;
+	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 8;
+	 * rekisteri.lisaa(levy1); #THROWS SailoException
 	 * </pre>
 	 */
 	public void lisaa(Albumi albumi) throws SailoException {
@@ -48,7 +65,7 @@ public class Rekisteri {
 	 * Palauttaa i:n albumin
 	 * @param i monesko albumi palautetaan
 	 * @return viite i:teen albumiin
-	 * @throws IndexOutOfBoundsException jos i väärin
+	 * @throws IndexOutOfBoundsException jos i vï¿½ï¿½rin
 	 */
 	public Albumi annaAlbumi(int i) throws IndexOutOfBoundsException {
 		return albumit.anna(i);
@@ -57,8 +74,8 @@ public class Rekisteri {
 	
 	/**
 	 * Lukee albumin tiedot tiedostosta
-	 * @param nimi jota käytetään lukemisessa
-	 * @throws SailoException jos lukeminen epäonnistuu
+	 * @param nimi jota kï¿½ytetï¿½ï¿½n lukemisessa
+	 * @throws SailoException jos lukeminen epï¿½onnistuu
 	 */
 	public void lueTiedostosta(String nimi) throws SailoException {
 		albumit.lueTiedostosta(nimi);
@@ -71,11 +88,11 @@ public class Rekisteri {
 	 */
 	public void tallenna() throws SailoException {
 		albumit.tallenna();
-		// TODO: yritä tallentaa toinen vaikka toinen epäonnistuisi
+		// TODO: yritï¿½ tallentaa toinen vaikka toinen epï¿½onnistuisi
 	}
 	
 	/**
-	 * Testiohjelma rekisteristä
+	 * Testiohjelma rekisteristï¿½
 	 * @param args
 	 */
 	public static void main(String args[]) {

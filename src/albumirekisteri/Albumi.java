@@ -22,8 +22,13 @@ public class Albumi {
 	
 	
 	/**
-	 * 
-	 * @return
+	 * @return albumin nimi
+	 * @example
+	 * <pre name="test">
+	 * Albumi levy1 = new Albumi();
+	 * levy1.vastaaAlbumi();
+	 * levy1.getNimi() =R= "Jytäkesä .*";
+	 * </pre>
 	 */
 	public String getNimi() {
 		return nimi;
@@ -64,6 +69,17 @@ public class Albumi {
 	/**
 	 * Antaa albumille seuraavan rekisterinumeron.
 	 * @return albumin uusi tunnunNro
+	 * @example
+	 * <pre name="test">
+	 * Albumi levy1 = new Albumi();
+	 * levy1.getTunnusNro() === 0;
+	 * levy1.rekisteroi();
+	 * Albumi levy2 = new Albumi();
+	 * levy2.rekisteroi();
+	 * int n1 = levy1.getTunnusNro();
+	 * int n2 = levy2.getTunnusNro();
+	 * n1 === n2-1;
+	 * </pre>
 	 */
 	public int rekisteroi() {
 		tunnusNro = seuraavaNro;
@@ -80,13 +96,20 @@ public class Albumi {
 		return tunnusNro;
 	}
 	
+	
+	/**
+	 * Arvotaan satunnainen kokonaisluku välille [ala,yla]
+	 * @param ala arvonnan alaraja
+	 * @param yla arvonnan yläraja
+	 * @return satunnainen luku väliltä [ala, yla]
+	 */
 	public static int rand(int ala, int yla) {
 		double n = (yla-ala)*Math.random() + ala;
 		return (int)Math.round(n);
 	}
 	
 	/**
-	 * 
+	 * Testiohjelma albumille.
 	 * @param args ei käytössä
 	 */
 	public static void main(String args[]) {
