@@ -18,7 +18,7 @@ public class Albumit {
 	 * Oletusmuodostaja
 	 */
 	public Albumit() {
-		// Atribuuttien oma alustus riitt√§√§
+		// Atribuuttien oma alustus riitt‰‰
 	}
 	
 	

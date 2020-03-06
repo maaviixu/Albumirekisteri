@@ -13,6 +13,7 @@ public class Albumi {
 	
 	private int		tunnusNro;
 	private String	nimi			= "";
+	private String	artisti			= "";
 	private int		julkaisuVuosi	= 0;
 	private String 	formaatti		= "";
 	private String 	yhtio			= "";
@@ -39,11 +40,12 @@ public class Albumi {
 	 * Tekee testialbumin
 	 */
 	public void vastaaAlbumi() {
-		nimi = "Jyt√§kes√§" + " " + rand(1000, 9999);
+		nimi = "Jyt‰kes‰" + " " + rand(1000, 9999);
+		artisti = "Jaakko ja Teppo";
 		julkaisuVuosi = 1962;
 		formaatti = "LP";
 		yhtio = "Matulan valinta";
-		lisatietoja = "Kes√§ -62 j√§i monen mieleen niin kuin t√§m√§ albumikin";
+		lisatietoja = "Kes‰ -62 j‰i monen mieleen niin kuin t‰m‰ albumikin";
 	}
 	
 	/**
@@ -51,8 +53,8 @@ public class Albumi {
 	 * @param out tietovirta johon tulostetaan
 	 */
 	public void tulosta(PrintStream out) {
-		out.println(String.format("%03d", tunnusNro, 3) + "  " + nimi);
-		out.println(julkaisuVuosi + " " + formaatti + " " + yhtio);
+		out.println(String.format("%03d", tunnusNro, 3) + "  " + nimi + " " + formaatti);
+		out.println(artisti + " " + julkaisuVuosi  + " " + yhtio);
 		out.println(lisatietoja);
 		
 	}
