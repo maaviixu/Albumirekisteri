@@ -93,7 +93,7 @@ public class Rekisteri {
 	
 	/**
 	 * Testiohjelma rekisterist�
-	 * @param args
+	 * @param args ei käytössä
 	 */
 	public static void main(String args[]) {
 		Rekisteri rekisteri = new Rekisteri();

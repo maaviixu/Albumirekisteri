@@ -6,7 +6,7 @@ import java.util.*;
 
 
 /**
- * Rekisterin kappaleet, joka osaa mm. lisätä uuden kappalee.
+ * Rekisterin kappaleet, joka osaa mm. lisï¿½tï¿½ uuden kappalee.
  * @author maaviixu
  *
  */
@@ -24,13 +24,13 @@ public class Kappaleet implements Iterable<Kappale> {
 	 * Kappaleiden alustaminen
 	 */
 	public Kappaleet() {
-		// Toistaiseksi ei tarvitse tehdä mitään
+		// Toistaiseksi ei tarvitse tehdï¿½ mitï¿½ï¿½n
 	}
 	
 	
 	/**
-	 * Lisää uuden kappaleen tietorkaneteeseen. Ottaa harrastuksen omistuukdeensa
-	 * @param kap lisättävä kappale. Huom tietorakenne muuttuu omistajaksi
+	 * Lisï¿½ï¿½ uuden kappaleen tietorkaneteeseen. Ottaa harrastuksen omistuukdeensa
+	 * @param kap lisï¿½ttï¿½vï¿½ kappale. Huom tietorakenne muuttuu omistajaksi
 	 */
 	public void lisaa(Kappale kap) {
 		alkiot.add(kap);
@@ -40,24 +40,24 @@ public class Kappaleet implements Iterable<Kappale> {
 	 * Lukee rekisterin tiedostosta
 	 * TODO kesken
 	 * @param hakemisto teidoston hakemisto
-	 * @throws SailoException jos lukeinen epäonnistuu
+	 * @throws SailoException jos lukeinen epï¿½onnistuu
 	 */
 	public void lueTiedostosta(String hakemisto) throws SailoException {
 		tiedostonNimi = hakemisto + ".kap";
-		 throw new SailoException("Ei osata vielä lukea tiedostoa " + tiedostonNimi); 
+		 throw new SailoException("Ei osata vielï¿½ lukea tiedostoa " + tiedostonNimi); 
 	}
 	
 	/**
 	 * Tallentaa rekisterin tiedostoon.
-	 * @throws SailoException
+	 * @throws SailoException jos tallentaminen epÃ¤onnistuu
 	 */
 	public void tallenna() throws SailoException {
-		throw new SailoException("Ei osata vielä tallettaa tiedostoa " + tiedostonNimi); 
+		throw new SailoException("Ei osata vielï¿½ tallettaa tiedostoa " + tiedostonNimi); 
 	}
 	
 	/**
-	 * Palauttaa albumin kappaleiden lukumäärän.
-	 * @return kappaleiden lukumäärä
+	 * Palauttaa albumin kappaleiden lukumï¿½ï¿½rï¿½n.
+	 * @return kappaleiden lukumï¿½ï¿½rï¿½
 	 */
 	public int getLkm() {
 		return alkiot.size();
@@ -65,12 +65,12 @@ public class Kappaleet implements Iterable<Kappale> {
 	
 	
 	/**
-	 * Iteraattori kaikkien kappaleiden läpikäymiseen
+	 * Iteraattori kaikkien kappaleiden lï¿½pikï¿½ymiseen
 	 * @return kappaleiteraattori
 	 * @example
 	 * <pre name="test">
 	 * 
-	 * Teeppä testit
+	 * Teeppï¿½ testit
 	 * 
 	 * </pre>
 	 */
@@ -84,11 +84,11 @@ public class Kappaleet implements Iterable<Kappale> {
 	/**
 	 * Haetaan kaikki albumin kappaleet
 	 * @param tunnusnro albumin tunnusnumero joille kappaleita haetaan
-	 * @return teitorakenne jossa viitteet löydettyihin kappaleisiin
+	 * @return teitorakenne jossa viitteet lï¿½ydettyihin kappaleisiin
 	 * @example
 	 * <pre name="test">
 	 * 
-	 * teeppä testit
+	 * teeppï¿½ testit
 	 * 
 	 * 
 	 * </pre>
@@ -101,6 +101,9 @@ public class Kappaleet implements Iterable<Kappale> {
 	}
 	
 	
+	/**
+	 * @param args ei kÃ¤ytÃ¶ssÃ¤
+	 */
 	public static void main(String[] args) {
 		Kappaleet laulut = new Kappaleet();
 		Kappale laulu1 = new Kappale();

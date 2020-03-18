@@ -18,7 +18,7 @@ public class Albumit {
 	 * Oletusmuodostaja
 	 */
 	public Albumit() {
-		// Atribuuttien oma alustus riittää
+		// Atribuuttien oma alustus riittï¿½ï¿½
 	}
 	
 	
@@ -60,7 +60,7 @@ public class Albumit {
 	 * Palauttaa viitteen i:teen albumiin
 	 * @param i monennenko albumin viite halutaan
 	 * @return viite jÃ¤seneen, jonka indeksi on i
-	 * @throws IndexOutOfBoundException jos ei ole sallitulla alueella
+	 * @throws IndexOutOfBoundsException jos ei ole sallitulla alueella
 	 */
 	public Albumi anna(int i) throws IndexOutOfBoundsException {
 		if (i < 0 || lkm <= i)

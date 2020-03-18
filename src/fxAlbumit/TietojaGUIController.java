@@ -29,13 +29,14 @@ public class TietojaGUIController implements ModalControllerInterface<String> {
 		
 	}
 	
+
 	@FXML
-	public void handleSulje() {
+	void handleSulje() {
 		sulje();
 	}
       //=============
 	
 	private void sulje() {
-		 Dialogs.showMessageDialog("Suljetaan ikkuna! Mutta ei toimi vielä");
+		 Dialogs.showMessageDialog("Suljetaan ikkuna! Mutta ei toimi vielï¿½");
 	}
 }

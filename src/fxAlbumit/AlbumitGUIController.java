@@ -171,7 +171,10 @@ public class AlbumitGUIController implements Initializable {
 		 Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi viel�");
 	 }
 	 
-	 public void setRekisteri(Rekisteri rekisteri) {
+	 /**
+	 * @param rekisteri Rekisteri jota käytetään tässä köyttöliittymässä
+	 */
+	public void setRekisteri(Rekisteri rekisteri) {
 		 this.rekisteri = rekisteri;
 		 naytaAlbumi();
 	 }
