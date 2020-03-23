@@ -12,9 +12,11 @@ import albumirekisteri.Rekisteri;
 
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import albumirekisteri.Albumi;
+import albumirekisteri.Kappale;
 import albumirekisteri.SailoException;
 
 
@@ -68,7 +70,13 @@ public class AlbumitGUIController implements Initializable {
 	
 	 @FXML
 	 void handleTulosta() {
-		 tulosta();
+	     // Tähän lisää kappale 
+	     // Albumin id parametrikis
+	     // mallia uusiAlbumista
+	     uusiKappale();
+	     
+		 
+	     //tulosta();
 	 }
 	 
 	 @FXML
@@ -110,7 +118,7 @@ public class AlbumitGUIController implements Initializable {
 		 
 		 areaAlbumi.setText("");
 		 try (PrintStream os = TextAreaOutputStream.getTextPrintStream(areaAlbumi)) {
-			 albumiKohdalla.tulosta(os);
+			 tulosta(os,albumiKohdalla);
 		 }
 	 }
 	 
@@ -119,6 +127,21 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 
 	 /**
+	  * Tulostetaan albumin tiedot
+	  * @param os tietovirta johon tulostetaan
+	  * @param albumi tulostettava albumi
+	  */
+	public void tulosta(PrintStream os, final Albumi albumi) {
+	    os.println("----------------------------------------------");
+	    albumi.tulosta(os);
+	    os.println("----------------------------------------------");
+	    List<Kappale> kappaleet = rekisteri.annaKappaleet(albumi);
+	    for (Kappale kap:kappaleet)
+	        kap.tulosta(os);
+        
+    }
+
+    /**
 	  * Hakee albumien tiedot listaan 
 	  * @param jnro albumin numero, joka aktivoidaan haun j�lkeen
 	  */
@@ -150,14 +173,29 @@ public class AlbumitGUIController implements Initializable {
 		 hae(uusi.getTunnusNro());
 	 }
 	 
+	 /**
+	 * Luo uuden kappaleen
+	 */
+	protected void uusiKappale() {
+	    if (albumiKohdalla == null ) return;
+	    Kappale kap = new Kappale();
+	    kap.rekisteroi();
+	    kap.vastaaMaailmanParasLaulu(albumiKohdalla.getTunnusNro());
+	    rekisteri.lisaa(kap);
+	    hae(albumiKohdalla.getTunnusNro());
+	 }
+	 
 	 
 	 private void hae() {
 		 Dialogs.showMessageDialog("Haetaan albumit! Mutta ei toimi viel�");
 	 }
 	 
+	 /*
+	 Käytetään tulosta painiketta kappaleen lisäämiseen. Muokataan projektin edetessä.
 	 private void tulosta() {
 		 Dialogs.showMessageDialog("Tulostetaan! Mutta ei toimi viel�");
 	 }
+	 */
 	 
 	 private void sulje() {
 		 Dialogs.showMessageDialog("Suljetaan ohjelma! Mutta ei toimi viel�");

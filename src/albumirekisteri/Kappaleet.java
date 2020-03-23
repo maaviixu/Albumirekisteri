@@ -14,9 +14,7 @@ public class Kappaleet implements Iterable<Kappale> {
 	
 	private String			tiedostonNimi = "";
 	
-	/**
-	 * Taulukko kappaleista
-	 */
+	/** Taulukko kappaleista */
 	private final Collection<Kappale> alkiot		= new ArrayList<Kappale>();
 	
 	
@@ -29,7 +27,7 @@ public class Kappaleet implements Iterable<Kappale> {
 	
 	
 	/**
-	 * Lis�� uuden kappaleen tietorkaneteeseen. Ottaa harrastuksen omistuukdeensa
+	 * Lis�� uuden kappaleen tietorkaneteeseen. Ottaa kappaleen omistuukdeensa
 	 * @param kap lis�tt�v� kappale. Huom tietorakenne muuttuu omistajaksi
 	 */
 	public void lisaa(Kappale kap) {
@@ -52,7 +50,7 @@ public class Kappaleet implements Iterable<Kappale> {
 	 * @throws SailoException jos tallentaminen epäonnistuu
 	 */
 	public void tallenna() throws SailoException {
-		throw new SailoException("Ei osata viel� tallettaa tiedostoa " + tiedostonNimi); 
+		throw new SailoException("Ei osata vielä tallentaa tiedostoa " + tiedostonNimi); 
 	}
 	
 	/**

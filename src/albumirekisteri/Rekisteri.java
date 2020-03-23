@@ -1,5 +1,6 @@
 package albumirekisteri;
 
+import java.util.List;
 
 /**
  * Rekisteri-luokka, joka huolehtii albumeista, artisteista
@@ -9,6 +10,7 @@ package albumirekisteri;
  */
 public class Rekisteri {
 	private final Albumit albumit = new Albumit();
+	private final Kappaleet kappaleet = new Kappaleet();
 	
 	/**
 	 * Palauttaa rekisterin albumeiden lukumäärän
@@ -59,6 +61,16 @@ public class Rekisteri {
 	public void lisaa(Albumi albumi) throws SailoException {
 		albumit.lisaa(albumi);
 	}
+	
+	
+	/**
+     * Lisätään uusi kappale rekisteriin
+     * @param kap lisättävä kappale
+     */
+    public void lisaa(Kappale kap) {
+        kappaleet.lisaa(kap);
+        
+    }
 	
 	
 	/**
@@ -123,6 +135,25 @@ public class Rekisteri {
 		
 		
 	}
+
+
+    /**
+     * Haetaan kaikki albumin kappaleet
+     * @param albumi albumi jolle kappaleita haetaan
+     * @return tietorakenne jossa viitteet löydettyihin harrastuksiin
+     * @example
+     * <pre name="test">
+     * 
+     * TESTIT
+     * 
+     * </pre>
+     */
+    public List<Kappale> annaKappaleet(Albumi albumi) {      
+        return kappaleet.annaKappaleet(albumi.getTunnusNro());
+    }
+
+
+    
 	
 	
 	
