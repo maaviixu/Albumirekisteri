@@ -94,7 +94,7 @@ public class Kappaleet implements Iterable<Kappale> {
 	public List<Kappale> annaKappaleet(int tunnusnro) {
 		List<Kappale> loydetyt = new ArrayList<Kappale>();
 		for (Kappale kap : alkiot)
-			if (kap.getTunnusNro() == tunnusnro) loydetyt.add(kap);
+			if (kap.getAlbumiNro() == tunnusnro) loydetyt.add(kap);
 		return loydetyt;
 	}
 	
