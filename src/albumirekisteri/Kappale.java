@@ -1,6 +1,5 @@
 package albumirekisteri;
 
-import java.util.*;
 import java.io.*;
 
 /**
@@ -21,10 +20,10 @@ public class Kappale {
 		private static int seuraavaNro = 1;
 		
 		/**
-		 * Alsutetaan kappale. Toistaiseksi ei tarvitse tehdä mitään.
+		 * Alsutetaan kappale. Toistaiseksi ei tarvitse tehdï¿½ mitï¿½ï¿½n.
 		 */
 		public Kappale() {
-			// Vielä ei tarvita mitään
+			// Vielï¿½ ei tarvita mitï¿½ï¿½n
 		}
 		
 		
@@ -38,12 +37,11 @@ public class Kappale {
 		
 		
 		/**
-		 * Apumetodi, jolla saadaan täytettyä testiarvot Kappaleelle.
+		 * Apumetodi, jolla saadaan tï¿½ytettyï¿½ testiarvot Kappaleelle.
 		 * Kappaleen kesto arvotaan, jotta kappaleella ei olisi samoja tietoja.
 		 * @param nro viite albumiin, jonka kappaleesta on kyse
 		 */
 		public void vastaaMaailmanParasLaulu(int nro) {
-			tunnusNro = 1;
 			albumiNro = nro;
 			nimi = "Maailman paras laulu";
 			double arpa = (Math.random()*10);
@@ -113,7 +111,7 @@ public class Kappale {
 		
 		/**
 		 * Testiohjelma Kappaleelle
-		 * @param args ei käytössä
+		 * @param args ei kï¿½ytï¿½ssï¿½
 		 */
 		public static void main(String[] args) {
 			Kappale kap = new Kappale();

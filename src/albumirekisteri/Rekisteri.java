@@ -85,6 +85,23 @@ public class Rekisteri {
 	
 	
 	/**
+     * Haetaan kaikki albumin kappaleet
+     * @param albumi albumi jolle kappaleita haetaan
+     * @return tietorakenne jossa viitteet löydettyihin harrastuksiin
+     * @example
+     * <pre name="test">
+     * 
+     * TESTIT
+     * 
+     * </pre>
+     */
+    public List<Kappale> annaKappaleet(Albumi albumi) {      
+        return kappaleet.annaKappaleet(albumi.getTunnusNro());
+    }
+
+	
+	
+	/**
 	 * Lukee albumin tiedot tiedostosta
 	 * @param nimi jota k�ytet��n lukemisessa
 	 * @throws SailoException jos lukeminen ep�onnistuu
@@ -137,21 +154,7 @@ public class Rekisteri {
 	}
 
 
-    /**
-     * Haetaan kaikki albumin kappaleet
-     * @param albumi albumi jolle kappaleita haetaan
-     * @return tietorakenne jossa viitteet löydettyihin harrastuksiin
-     * @example
-     * <pre name="test">
-     * 
-     * TESTIT
-     * 
-     * </pre>
-     */
-    public List<Kappale> annaKappaleet(Albumi albumi) {      
-        return kappaleet.annaKappaleet(albumi.getTunnusNro());
-    }
-
+    
 
     
 	
