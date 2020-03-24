@@ -30,7 +30,9 @@ public class AlbumitMain extends Application {
 			Rekisteri rekisteri = new Rekisteri();
 			albumitGUICtrl.setRekisteri(rekisteri);
 			
- 
+			primaryStage.setOnCloseRequest((event) -> {
+			    if ( !albumitGUICtrl.voikoSulkea() ) event.consume();
+			});
 
 			
 		} catch(Exception e) {

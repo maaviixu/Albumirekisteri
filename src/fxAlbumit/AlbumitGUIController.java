@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 
 
@@ -26,12 +27,9 @@ import albumirekisteri.SailoException;
  *
  */
 public class AlbumitGUIController implements Initializable {
-	
-	
-
-	 
-	 @FXML private ScrollPane panelAlbumi;
-	 
+		         
+     @FXML private TextField hakuehto;
+	 @FXML private ScrollPane panelAlbumi;	 
 	 @FXML private ListChooser<Albumi> chooserAlbumit;
 
 	 @FXML
@@ -87,6 +85,7 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 // ==========================================
 	 
+	 private String rekisterinnimi = "albumit";
 	 private Rekisteri rekisteri;
 	 private Albumi albumiKohdalla;
 	 private TextArea areaAlbumi = new TextArea();
@@ -206,7 +205,12 @@ public class AlbumitGUIController implements Initializable {
 	 }
 	 
 	 private void tallenna() {
-		 Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi viel�");
+		 // Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi viel�");
+	     try {
+            rekisteri.tallenna();
+        } catch (SailoException e) {
+            Dialogs.showMessageDialog(e.getMessage());
+        }
 	 }
 	 
 	 /**
@@ -222,4 +226,53 @@ public class AlbumitGUIController implements Initializable {
 		alusta();
 		
 	}
+
+    /**
+     * Tarkistetaan onko tallennus tehty
+     * @return true jos saa sulkea sovelluksen, false jos ei
+     */
+    public boolean voikoSulkea() {
+        tallenna();
+        return true;
+    }
+
+    /**
+     * Kysytään tiedoston nimi ja luetaan se
+     * @return true jos onnistui, false jos ei
+     */
+    public boolean avaa() {
+        String uusinimi = "albumit.dat";
+        lueTiedosto(uusinimi);                    
+        return true;
+    }
+
+    /**
+     * Alsutaa rekisterin lukemalla sen valitun nimisestä tiedostosta
+     * @param nimi tiedosto josta kerhon tiedot luetaan
+     */
+    protected void lueTiedosto(String nimi) {
+        rekisterinnimi = nimi;
+        setTitle("Rekisteri - " + rekisterinnimi);
+        String virhe = "Ei osata lukea vielä";
+        // if (virhe != null)
+            Dialogs.showMessageDialog(virhe);
+    }
+    
+    private void setTitle(String title) {
+        ModalController.getStage(hakuehto).setTitle(title);
+    }
+
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+

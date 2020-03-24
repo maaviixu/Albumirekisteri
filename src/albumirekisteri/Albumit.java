@@ -1,6 +1,10 @@
 package albumirekisteri;
 
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Albumirekisterin albumit, joka osaa mm. lisätä uuden albumin
@@ -10,9 +14,12 @@ package albumirekisteri;
 public class Albumit {
 	
 	private static final int	MAX_ALBUMIT		= 8;
+	private boolean             muutettu        = false;
 	private int					lkm				= 0;
-	private String 				tiedostonNimi	= "";
+	private String 				tiedostonNimi	= "";	
 	private Albumi				alkiot[]		= new Albumi[MAX_ALBUMIT];
+	
+	// private String              kokoNimi        = "";
 	
 	/**
 	 * Oletusmuodostaja
@@ -53,6 +60,7 @@ public class Albumit {
 		if (lkm >= alkiot.length) throw new SailoException("Liikaa alkiota");
 		alkiot[lkm] = albumi;
 		lkm++;
+		muutettu = true;
 	}
 	
 	
@@ -85,7 +93,23 @@ public class Albumit {
 	 * @throws SailoException jos tallentaminen ep�onnistuu
 	 */
 	public void tallenna() throws SailoException {
-		throw new SailoException("Ei osata viel� tallentaa tiedostoa " + tiedostonNimi);		
+	    if ( !muutettu ) return;
+	    File ftied = new File("albumit/albumit.dat");
+	    try ( PrintWriter fo = new PrintWriter(new FileWriter(ftied.getCanonicalPath())) ) {
+	        //fo.println(getKokoNimi());
+	        fo.println("Albumit");
+	        fo.println(alkiot.length);
+	        for (int i = 0; i < getLkm(); i++) {
+	            Albumi albumi = anna(i);
+	            fo.println(albumi.toString());
+	            
+	        }
+	    } catch (FileNotFoundException e) {
+	        throw new SailoException("Tiedosto " + ftied.getName() + " ei aukea");	  	        
+	    } catch (IOException e) {
+	        throw new SailoException("Tiedoston " + ftied.getName() + " kirjoittamisessa ongelmia");
+        }
+		muutettu = false;		
 	}
 	
 	

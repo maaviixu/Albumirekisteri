@@ -2,6 +2,8 @@ package albumirekisteri;
 
 import java.io.*;
 
+import fi.jyu.mit.ohj2.Mjonot;
+
 
 /**
  * Albumirekisterin albumi, joka osaa mm. huolehtia tunnusNro:sta
@@ -40,12 +42,12 @@ public class Albumi {
 	 * Tekee testialbumin
 	 */
 	public void vastaaAlbumi() {
-		nimi = "Jyt‰kes‰" + " " + rand(1000, 9999);
+		nimi = "JytÔøΩkesÔøΩ" + " " + rand(1000, 9999);
 		artisti = "Jaakko ja Teppo";
 		julkaisuVuosi = 1962;
 		formaatti = "LP";
 		yhtio = "Matulan valinta";
-		lisatietoja = "Kes‰ -62 j‰i monen mieleen niin kuin t‰m‰ albumikin";
+		lisatietoja = "KesÔøΩ -62 jÔøΩi monen mieleen niin kuin tÔøΩmÔøΩ albumikin";
 	}
 	
 	/**
@@ -96,6 +98,66 @@ public class Albumi {
 	 */
 	public int getTunnusNro() {
 		return tunnusNro;
+	}
+	
+	/**
+	 * Asettaa tunnusnumeron ja varmistaa, ett√§ seuraavaNro on
+	 * aina suurempi kuin t√§h√§n menness√§ suurin
+	 * @param nr asetettava tunnusnumero
+	 */
+	private void setTunnusNro(int nr) {
+	    tunnusNro = nr;
+	    if (tunnusNro >= seuraavaNro) {
+	        seuraavaNro = tunnusNro + 1;
+	    }
+	}
+	
+	
+	/**
+	 * Palauttaa albumin tiedot merkkijonona jonka voi tallentaa
+	 * @return albumi tolppaeroteltuna merkkijonona
+	 * @example
+	 * <pre name="test">
+	 * Albumi albumi = new Albumi();
+	 * albumi.parse("     5    | JYT√Ñ√Ñ   | Matti ja Mara-katti");
+	 * albumi.toString().startsWith("5|JYT√Ñ√Ñ|Matti ja Mara-katti|") === true;
+	 * </pre>
+	 */
+	@Override
+	public String toString() {
+	    return "" + 
+	            getTunnusNro() + "|" +
+	            nimi + "|" +
+	            artisti + "|" +
+	            julkaisuVuosi + "|" +
+	            formaatti + "|" +
+	            yhtio + "|" +
+	            lisatietoja;
+	}
+	
+	/**
+	 * Hakee albumin tiedot tolpalla erotellusta merkkijonosta.
+	 * Pit√§√§ huolen, ett√§ seuraavaNro on suurempi kuin tuleva tunnusNro.
+	 * @param rivi josta albumin tiedot otetaan
+	 * @example
+	 * <pre name="test">
+	 * 
+	 * TESTIT
+	 * 
+	 * 
+	 * </pre>
+	 */
+	public void parse(String rivi) {
+	    StringBuilder sb = new StringBuilder(rivi);
+	    setTunnusNro(Mjonot.erota(sb, '|', getTunnusNro()));
+	    nimi = Mjonot.erota(sb, '|', nimi);
+	    artisti = Mjonot.erota(sb, '|', artisti);
+	    julkaisuVuosi = Mjonot.erota(sb, '|', julkaisuVuosi);
+	    formaatti = Mjonot.erota(sb, '|', formaatti);
+	    yhtio = Mjonot.erota(sb, '|', yhtio);
+	    lisatietoja = Mjonot.erota(sb, '|', lisatietoja);
+	    
+	        
 	}
 	
 	

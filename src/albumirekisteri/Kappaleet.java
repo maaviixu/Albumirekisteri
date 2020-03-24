@@ -12,6 +12,8 @@ import java.util.*;
  */
 public class Kappaleet implements Iterable<Kappale> {
 	
+    private boolean         muutettu = false;
+    private String          tiedostonPerusNimi = "albumit/kappaleet.dat";
 	private String			tiedostonNimi = "";
 	
 	/** Taulukko kappaleista */
@@ -42,7 +44,7 @@ public class Kappaleet implements Iterable<Kappale> {
 	 */
 	public void lueTiedostosta(String hakemisto) throws SailoException {
 		tiedostonNimi = hakemisto + ".kap";
-		 throw new SailoException("Ei osata viel� lukea tiedostoa " + tiedostonNimi); 
+		throw new SailoException("Ei osata viel� lukea tiedostoa " + tiedostonNimi); 
 	}
 	
 	/**

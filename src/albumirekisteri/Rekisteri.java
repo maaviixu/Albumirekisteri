@@ -102,7 +102,7 @@ public class Rekisteri {
 	
 	
 	/**
-	 * Lukee albumin tiedot tiedostosta
+	 * Luetaan tiedostot
 	 * @param nimi jota k�ytet��n lukemisessa
 	 * @throws SailoException jos lukeminen ep�onnistuu
 	 */
@@ -112,12 +112,26 @@ public class Rekisteri {
 	
 	
 	/**
-	 * Tallentaa albumiden tiedot tiedostoon
+	 * Tallentaa rekisterin tiedot tiedostoon
 	 * @throws SailoException jos tallentamisessa ongelmia
 	 */
 	public void tallenna() throws SailoException {
-		albumit.tallenna();
-		// TODO: yrit� tallentaa toinen vaikka toinen ep�onnistuisi
+	    String virhe = "";
+		try {
+            albumit.tallenna();
+        } catch (SailoException e) {
+            virhe += e.getMessage();
+        }
+		/*
+		try {
+		    kappaleet.tallenna();
+        } catch (SailoException e) {
+            virhe += e.getMessage();
+        }
+        */
+		if ( virhe.length() > 0)
+		    throw new SailoException(virhe);
+		
 	}
 	
 	/**
