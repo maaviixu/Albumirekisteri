@@ -103,11 +103,12 @@ public class Rekisteri {
 	
 	/**
 	 * Luetaan tiedostot
-	 * @param nimi jota k�ytet��n lukemisessa
-	 * @throws SailoException jos lukeminen ep�onnistuu
+	 * @throws SailoException jos lukeminen epäonnistuu
 	 */
-	public void lueTiedostosta(String nimi) throws SailoException {
-		albumit.lueTiedostosta(nimi);
+	public void lueTiedostosta() throws SailoException {
+	    
+		albumit.lueTiedostosta("albumit/albumit");
+		kappaleet.lueTiedostosta("albumit/kappaleet");
 	}
 	
 	
@@ -122,13 +123,13 @@ public class Rekisteri {
         } catch (SailoException e) {
             virhe += e.getMessage();
         }
-		/*
+		
 		try {
 		    kappaleet.tallenna();
         } catch (SailoException e) {
             virhe += e.getMessage();
         }
-        */
+        
 		if ( virhe.length() > 0)
 		    throw new SailoException(virhe);
 		

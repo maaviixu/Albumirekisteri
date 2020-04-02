@@ -1,7 +1,9 @@
 package albumirekisteri;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,13 +15,13 @@ import java.io.PrintWriter;
  */
 public class Albumit {
 	
-	private static final int	MAX_ALBUMIT		= 8;
-	private boolean             muutettu        = false;
-	private int					lkm				= 0;
-	private String 				tiedostonNimi	= "";	
-	private Albumi				alkiot[]		= new Albumi[MAX_ALBUMIT];
+	private static final int	MAX_ALBUMIT		     = 8;
+	private boolean             muutettu             = false;
+	private int					lkm				     = 0;
+	private String 				tiedostonPerusNimi	 = "albumit/albumit";	
+	private Albumi				alkiot[]		     = new Albumi[MAX_ALBUMIT];
 	
-	// private String              kokoNimi        = "";
+	private String              kokoNimi             = "";
 	
 	/**
 	 * Oletusmuodostaja
@@ -57,7 +59,13 @@ public class Albumit {
 	 * </pre>
 	 */
 	public void lisaa(Albumi albumi) throws SailoException {
-		if (lkm >= alkiot.length) throw new SailoException("Liikaa alkiota");
+		if (lkm >= alkiot.length) {
+		    Albumi uudet[] = new Albumi[lkm*2];
+		    for (int i = 0; i < alkiot.length; i++) {
+		        uudet[i] = alkiot[i];
+		    }
+		    alkiot = uudet;
+		}
 		alkiot[lkm] = albumi;
 		lkm++;
 		muutettu = true;
@@ -79,16 +87,89 @@ public class Albumit {
 	
 	/**
 	 * Lukee albumeiden tiedostosta. Kesken
-	 * @param hakemisto tiedoston hakemisto
+	 * @param tied tiedoston perusnimi
 	 * @throws SailoException jos lukeminen ep�onnistuu
+	 * @example
+	 * <pre name="test">
+	 * 
+	 * TESTIT
+	 * 
+	 * </pre>
 	 */
-	public void lueTiedostosta(String hakemisto) throws SailoException {
-		tiedostonNimi = hakemisto + "/albumit.dat";
-		throw new SailoException("Ei osata lukea viel� tiedostoa " + tiedostonNimi);		
+	public void lueTiedostosta(String tied) throws SailoException {
+	    setTiedostonPerusNimi(tied);
+        try ( BufferedReader fi = new BufferedReader(new FileReader(getTiedostonNimi())) ) {
+            kokoNimi = fi.readLine();
+            if ( kokoNimi == null ) throw new SailoException("Kerhon nimi puuttuu");
+            String rivi = fi.readLine();
+            if ( rivi == null ) throw new SailoException("Maksimikoko puuttuu");
+            // int maxKoko = Mjonot.erotaInt(rivi,10); // tehdään jotakin
+
+            while ( (rivi = fi.readLine()) != null ) {
+                rivi = rivi.trim();
+                if ( "".equals(rivi) || rivi.charAt(0) == ';' ) continue;
+                Albumi albumi = new Albumi();
+                albumi.parse(rivi); // voisi olla virhekäsittely
+                lisaa(albumi);
+            }
+            muutettu = false;
+        } catch ( FileNotFoundException e ) {
+            throw new SailoException("Tiedosto " + getTiedostonNimi() + " ei aukea");
+        } catch ( IOException e ) {
+            throw new SailoException("Ongelmia tiedoston kanssa: " + e.getMessage());
+        }
+
 	}
+	
+	/**
+     * Luetaan aikaisemmin annetun nimisestä tiedostosta
+     * @throws SailoException jos tulee poikkeus
+     */
+    public void lueTiedostosta() throws SailoException {
+        lueTiedostosta(getTiedostonPerusNimi());
+    }
+
 	
 	
 	/**
+	 * Palauttaa tiedoston nimen, jota käytetään tallennukseen
+	 * @return tallennustiedoston nimi
+	 */
+	public String getTiedostonPerusNimi() {
+        return tiedostonPerusNimi;
+    }
+
+
+    /**
+     * Asettaa tiedoston perusnimen ilman tarkenninta
+	 * @param nimi tallennustiedoston perusnimi
+	 */
+	public void setTiedostonPerusNimi(String nimi) {
+        tiedostonPerusNimi = nimi;
+        
+    }
+
+
+    /**
+     * Palauttaa tiedoston nimen, jota käytetään tallennukseen
+     * @return tallennustiedoston nimi
+     */
+    public String getTiedostonNimi() {        
+        return getTiedostonPerusNimi() + ".dat";
+    }
+    
+    /**
+     * Palauttaa varakopiotiedoston nimen
+     * @return varakopiotiedoston nimi
+     */
+    public String getBakNimi() {
+        return tiedostonPerusNimi + ".bak";
+    }
+
+
+
+
+    /**
 	 * Tallentaa albumeiden tiedostoon. Kesken.
 	 * @throws SailoException jos tallentaminen ep�onnistuu
 	 */

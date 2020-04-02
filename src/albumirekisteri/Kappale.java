@@ -2,6 +2,8 @@ package albumirekisteri;
 
 import java.io.*;
 
+import fi.jyu.mit.ohj2.Mjonot;
+
 /**
  * Kappale, joka osaa mm. itse huolehtia tunnusnumerostaan.
  * 
@@ -23,7 +25,7 @@ public class Kappale {
 		 * Alsutetaan kappale. Toistaiseksi ei tarvitse tehd� mit��n.
 		 */
 		public Kappale() {
-			// Viel� ei tarvita mit��n
+			// Vielä ei tarvita mitään
 		}
 		
 		
@@ -118,6 +120,40 @@ public class Kappale {
 			kap.vastaaMaailmanParasLaulu(1);
 			kap.tulosta(System.out);
 		}
+
+		/**
+		 * Selvittää kappaleet tiedot | erotellusta merkkijonosta
+		 * @param rivi josta harrastuksen tiedot otetaan
+		 */
+        public void parse(String rivi) {
+            StringBuilder sb = new StringBuilder(rivi);
+            setTunnusNro(Mjonot.erota(sb, '|', getTunnusNro()));
+            albumiNro = (Mjonot.erota(sb, '|', albumiNro));
+            nimi = Mjonot.erota(sb, '|', nimi);
+            kesto = (Mjonot.erota(sb, '|', kesto));                                   
+        }
+
+
+        private void setTunnusNro(int nr) {
+            tunnusNro = nr;
+            if ( tunnusNro >= seuraavaNro ) seuraavaNro = tunnusNro + 1;
+            
+        }
+        
+        
+        /**
+         * Palauttaa kappaleen tiedot merkkijonona, jonka voi tallentaa tiedostoon.
+         * @return kappale tolppaeroteltuna merkkijonona
+         */
+        @Override
+        public String toString() {
+            return "" + getTunnusNro() + "|" + albumiNro + "|" + nimi + "|" + kesto;
+        }
+
+
+
+
+        
 		
 		
 	

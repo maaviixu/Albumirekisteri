@@ -42,12 +42,12 @@ public class Albumi {
 	 * Tekee testialbumin
 	 */
 	public void vastaaAlbumi() {
-		nimi = "Jyt�kes�" + " " + rand(1000, 9999);
+		nimi = "Jytäkesä" + " " + rand(1000, 9999);
 		artisti = "Jaakko ja Teppo";
 		julkaisuVuosi = 1962;
 		formaatti = "LP";
 		yhtio = "Matulan valinta";
-		lisatietoja = "Kes� -62 j�i monen mieleen niin kuin t�m� albumikin";
+		lisatietoja = "Kesä -62 jäi monen mieleen niin kuin tämä albumikin";
 	}
 	
 	/**

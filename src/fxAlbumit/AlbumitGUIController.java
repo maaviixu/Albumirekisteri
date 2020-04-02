@@ -85,7 +85,6 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 // ==========================================
 	 
-	 private String rekisterinnimi = "albumit";
 	 private Rekisteri rekisteri;
 	 private Albumi albumiKohdalla;
 	 private TextArea areaAlbumi = new TextArea();
@@ -108,7 +107,7 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 
 	 /**
-	  * N�ytt�� lsitasta valitun albumin tiedot, tilap�isesti yhteen isoon edit-kentt��n
+	  * Näyttää listasta valitun albumin tiedot, tilapäisesti yhteen isoon edit-kenttään
 	  */
 	 protected void naytaAlbumi() {
 		 albumiKohdalla = chooserAlbumit.getSelectedObject();
@@ -153,7 +152,7 @@ public class AlbumitGUIController implements Initializable {
 			 if ( albumi.getTunnusNro() == jnro) index = i;
 			 chooserAlbumit.add(albumi.getNimi(), albumi);
 		 }
-		 chooserAlbumit.setSelectedIndex(index); // t�st� tulee muutosviesti joka n�ytt�� j�senen
+		 chooserAlbumit.setSelectedIndex(index); // tästä tulee muutosviesti joka näyttää jäsenen
 	 }
 	 
 	 /**
@@ -205,7 +204,6 @@ public class AlbumitGUIController implements Initializable {
 	 }
 	 
 	 private void tallenna() {
-		 // Dialogs.showMessageDialog("Tallennetaan! Mutta ei toimi viel�");
 	     try {
             rekisteri.tallenna();
         } catch (SailoException e) {
@@ -218,7 +216,9 @@ public class AlbumitGUIController implements Initializable {
 	 */
 	public void setRekisteri(Rekisteri rekisteri) {
 		 this.rekisteri = rekisteri;
+		 lueTiedosto();
 		 naytaAlbumi();
+		 
 	 }
 
 	@Override
@@ -236,31 +236,37 @@ public class AlbumitGUIController implements Initializable {
         return true;
     }
 
+
     /**
      * Kysytään tiedoston nimi ja luetaan se
      * @return true jos onnistui, false jos ei
      */
+    /*
     public boolean avaa() {
-        String uusinimi = "albumit.dat";
+        String uusinimi = "albumit";
         lueTiedosto(uusinimi);                    
         return true;
     }
+    */
 
     /**
-     * Alsutaa rekisterin lukemalla sen valitun nimisestä tiedostosta
-     * @param nimi tiedosto josta kerhon tiedot luetaan
+     * Alustaa rekisterin lukemalla sen valitun nimisestä tiedostosta
+     * @return null, jos onnistuu, muuten virhe tekstinä
      */
-    protected void lueTiedosto(String nimi) {
-        rekisterinnimi = nimi;
-        setTitle("Rekisteri - " + rekisterinnimi);
-        String virhe = "Ei osata lukea vielä";
-        // if (virhe != null)
-            Dialogs.showMessageDialog(virhe);
+    protected String lueTiedosto() {        
+        try {
+            rekisteri.lueTiedostosta();
+            hae(0);
+            return null;
+        } catch (SailoException e) {
+            hae(0);
+            String virhe = e.getMessage(); 
+            if ( virhe != null ) Dialogs.showMessageDialog(virhe);
+            return virhe;
+        }
     }
     
-    private void setTitle(String title) {
-        ModalController.getStage(hakuehto).setTitle(title);
-    }
+    
 
     
 }
