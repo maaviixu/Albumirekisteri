@@ -3,16 +3,22 @@ package fxAlbumit;
 import fi.jyu.mit.fxgui.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import fi.jyu.mit.fxgui.ComboBoxChooser;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Font;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
+import fi.jyu.mit.fxgui.StringGrid;
+import static fxAlbumit.TietueDialogController.getFieldId;
 
 
 import albumirekisteri.Rekisteri;
 
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -29,9 +35,19 @@ import albumirekisteri.SailoException;
 public class AlbumitGUIController implements Initializable {
 		         
      @FXML private TextField hakuehto;
-	 @FXML private ScrollPane panelAlbumi;	 
+	 @FXML private ScrollPane panelAlbumi;
+	 @FXML private GridPane gridAlbumi;
 	 @FXML private ListChooser<Albumi> chooserAlbumit;
+	 @FXML private StringGrid<Kappale> tableKappaleet;
+	 @FXML private ComboBoxChooser<String> cbKentat;
 
+	 
+	 
+	 @FXML private void handleHakuehto() { 
+	        hae(0); 
+	    }
+
+	 
 	 @FXML
 	 void handleTallenna() {
 		 tallenna();
@@ -39,15 +55,12 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 @FXML
 	 void handleUusiAlbumi() {
-		 uusiAlbumi();
-		 //ModalController.showModal(AlbumitGUIController.class.getResource("MuokkaaGUIView.fxml"),
-		//		 "Albumi", null, "");
+		 uusiAlbumi();		 
 	 }
 	 
 	 @FXML
 	 void handleMuokkaaAlbumia() {
-		 ModalController.showModal(AlbumitGUIController.class.getResource("MuokkaaGUIView.fxml"),
-				 "Albumi", null, "");
+		 muokkaa(kentta);		 			 
 	 }
 	 
 	 @FXML
@@ -58,7 +71,7 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 @FXML
 	 void handlePoista() {
-		 poista();
+		 poistaAlbumi();
 	 }
 	 
 	 @FXML
@@ -68,13 +81,17 @@ public class AlbumitGUIController implements Initializable {
 	
 	 @FXML
 	 void handleTulosta() {
-	     // Tähän lisää kappale 
-	     // Albumin id parametrikis
-	     // mallia uusiAlbumista
+	     tulosta();
+	 }
+	 
+	 @FXML
+	 void handleLisaakap() {
 	     uusiKappale();
-	     
-		 
-	     //tulosta();
+	 }
+	 
+	 @FXML
+	 void handlePoistakap() {
+	     poistaKappale();
 	 }
 	 
 	 @FXML
@@ -87,22 +104,93 @@ public class AlbumitGUIController implements Initializable {
 	 
 	 private Rekisteri rekisteri;
 	 private Albumi albumiKohdalla;
-	 private TextArea areaAlbumi = new TextArea();
+	 private TextField edits[];
+	 private int kentta = 0;
+	 private static Albumi apualbumi = new Albumi();
+	 private static Kappale apukappale = new Kappale();
 	 
 	 
 	 
 	 /**
 	  * Tekee tarvittavat muut alustukset, nyt vaihdetaan GridPanen tilalle
-	  * yksi iso tekstikentt�, johon voidaan tulostaa albumien tiedot.
-	  * Alustetaan my�s albumilistan kuuntelija
+	  * yksi iso tekstikenttä, johon voidaan tulostaa albumien tiedot.
+	  * Alustetaan myös albumilistan kuuntelija
 	  */
-	 protected void alusta() {
-		 panelAlbumi.setContent(areaAlbumi);
-		 areaAlbumi.setFont(new Font("Courier New", 12));
-		 panelAlbumi.setFitToHeight(true);
-		 
+	 protected void alusta() {		 
 		 chooserAlbumit.clear();
 		 chooserAlbumit.addSelectionListener(e -> naytaAlbumi());
+		 
+		 
+		 cbKentat.clear();
+		 for (int k = apualbumi.ekaKentta(); k < apualbumi.getKenttia(); k++) 
+		     cbKentat.add(apualbumi.getKysymys(k), null);
+		 
+	     cbKentat.getSelectionModel().select(0); 	        
+	     edits = TietueDialogController.luoKentat(gridAlbumi, apualbumi);
+
+		 
+		 for (TextField edit : edits)
+		     if (edit != null) {
+		         edit.setEditable(false);
+		         edit.setOnMouseClicked(e -> { if ( e.getClickCount() > 1 ) muokkaa(getFieldId(e.getSource(),0)); });  
+	             edit.focusedProperty().addListener((a,o,n) -> kentta = getFieldId(edit,kentta));
+	             edit.setOnKeyPressed( e -> {if ( e.getCode() == KeyCode.F2 ) muokkaa(kentta);});
+		     }
+		 
+		 int eka = apukappale.ekaKentta();
+		 int lkm = apukappale.getKenttia();
+		 String[] otsikot = new String[lkm-eka];
+		 for (int i = 0, k = eka; k < lkm; i++, k++) {
+		     otsikot[i] = apukappale.getKysymys(k);
+		     
+		     
+		 }
+		 
+		 tableKappaleet.initTable(otsikot);
+		 tableKappaleet.setEditable(true);
+         tableKappaleet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+         tableKappaleet.setPlaceholder(new Label("Ei vielä kappaleita"));
+         tableKappaleet.setColumnWidth(-1, 200);
+         tableKappaleet.setOnMouseClicked( e -> { if ( e.getClickCount() > 1 ) muokkaaKappaletta(); } );
+         tableKappaleet.setOnKeyPressed( e -> {if ( e.getCode() == KeyCode.F2 ) muokkaaKappaletta();}); 
+
+	 }
+	 
+	 private void muokkaaKappaletta() {
+	     int r = tableKappaleet.getRowNr();
+	     if ( r < 0 ) return;
+	     Kappale kap = tableKappaleet.getObject(r);
+	     if ( kap == null) return;
+	     int k = tableKappaleet.getColumnNr()+kap.ekaKentta();
+	     try {
+	         kap = TietueDialogController.kysyTietue(null, kap.clone(), k);
+	         if (kap == null) return;
+	         rekisteri.korvaaTaiLisaa(kap);
+	         naytaKappaleet(albumiKohdalla);
+	         tableKappaleet.selectRow(r);
+	     } catch (CloneNotSupportedException  e) { /* clone on tehty */
+	     } catch (SailoException e) {
+	         Dialogs.showMessageDialog("Ongelmia lisäämisessä: " + e.getMessage());
+	     }
+	 }
+	 
+	 
+
+    private void muokkaa(int k) {
+	     if (albumiKohdalla == null) return;
+	     try {
+	         Albumi albumi;
+	         albumi = TietueDialogController.kysyTietue(null, albumiKohdalla.clone(), k);
+	         if (albumi == null) return;
+	         rekisteri.korvaaTaiLisaa(albumi);
+	         hae(albumi.getTunnusNro());
+	     } catch (CloneNotSupportedException e ) {
+	         //
+	     } catch (SailoException e) { 
+	            Dialogs.showMessageDialog(e.getMessage()); 
+	        } 
+
+	     
 	 }
 	 
 	 
@@ -114,10 +202,10 @@ public class AlbumitGUIController implements Initializable {
 		 
 		 if (albumiKohdalla == null) return;
 		 
-		 areaAlbumi.setText("");
-		 try (PrintStream os = TextAreaOutputStream.getTextPrintStream(areaAlbumi)) {
-			 tulosta(os,albumiKohdalla);
-		 }
+		 TietueDialogController.naytaTietue(edits, albumiKohdalla);
+		 naytaKappaleet(albumiKohdalla);
+		 double kesto = rekisteri.annaKesto(albumiKohdalla.getTunnusNro());
+		 edits[edits.length-1].setText("" + kesto);
 	 }
 	 
 	 
@@ -141,17 +229,42 @@ public class AlbumitGUIController implements Initializable {
 
     /**
 	  * Hakee albumien tiedot listaan 
-	  * @param jnro albumin numero, joka aktivoidaan haun j�lkeen
+	  * @param jnr albumin numero, joka aktivoidaan haun j�lkeen
 	  */
-	 protected void hae(int jnro) {
+	 protected void hae(int jnr) {
+	     int jnro = jnr;
+	     if (jnro <= 0) {
+	         Albumi kohdalla = albumiKohdalla;
+	         if (kohdalla != null) jnro = kohdalla.getTunnusNro();
+	     }
+	     
+	     int k = cbKentat.getSelectionModel().getSelectedIndex() + apualbumi.ekaKentta();
+	     String ehto = hakuehto.getText();
+	     if (ehto.indexOf('*') < 0) ehto = "*" + ehto + "*";
+	     
 		 chooserAlbumit.clear();
-		 
+		 		 		 
 		 int index = 0;
+		 Collection<Albumi> albumit;
+		 try {
+	            albumit = rekisteri.etsi(ehto, k);
+	            int i = 0;
+	            for (Albumi albumi:albumit) {
+	                if (albumi.getTunnusNro() == jnro) index = i;
+	                chooserAlbumit.add(albumi.getNimi(), albumi);
+	                i++;
+	            }
+	        } catch (SailoException ex) {
+	            Dialogs.showMessageDialog("Jäsenen hakemisessa ongelmia! " + ex.getMessage());
+	        }
+
+		 /*
 		 for (int i = 0; i < rekisteri.getAlbumit(); i++) {
 			 Albumi albumi = rekisteri.annaAlbumi(i);
 			 if ( albumi.getTunnusNro() == jnro) index = i;
 			 chooserAlbumit.add(albumi.getNimi(), albumi);
 		 }
+		 */
 		 chooserAlbumit.setSelectedIndex(index); // tästä tulee muutosviesti joka näyttää jäsenen
 	 }
 	 
@@ -159,16 +272,37 @@ public class AlbumitGUIController implements Initializable {
 	  * Luo uuden albumin jota aletaan editoimaan.
 	  */
 	 protected void uusiAlbumi() {
-		 Albumi uusi = new Albumi();
-		 uusi.rekisteroi();
-		 uusi.vastaaAlbumi();
 		 try {
+		     Albumi uusi = new Albumi();
+		     uusi = TietueDialogController.kysyTietue(null, uusi, 1);
+		     if (uusi == null) return;
+		     uusi.rekisteroi();
 			 rekisteri.lisaa(uusi);
+			 hae(uusi.getTunnusNro());
 		 } catch (SailoException e) {
 			 Dialogs.showMessageDialog("Ongelmia uuden luomisessa " + e.getMessage());
 			 return;
 		 }
-		 hae(uusi.getTunnusNro());
+	 }
+	 
+	 private void naytaKappaleet(Albumi albumi) {
+	     tableKappaleet.clear();
+	     if ( albumi == null ) return;
+	     
+	     List<Kappale> kappaleet = rekisteri.annaKappaleet(albumi);
+         if ( kappaleet.size() == 0) return;
+         for ( Kappale kap : kappaleet)
+             naytaKappale(kap);
+	 }
+	 
+	 private void naytaKappale(Kappale kap) {
+	     int kenttia = kap.getKenttia();
+	     String[] rivi = new String[kenttia-kap.ekaKentta()];
+	     for (int i = 0, k = kap.ekaKentta(); k < kenttia; i++, k++) {
+	         rivi[i] = kap.anna(k);
+	     }
+	     tableKappaleet.add(kap,rivi);
+	         
 	 }
 	 
 	 /**
@@ -176,31 +310,32 @@ public class AlbumitGUIController implements Initializable {
 	 */
 	protected void uusiKappale() {
 	    if (albumiKohdalla == null ) return;
-	    Kappale kap = new Kappale();
-	    kap.rekisteroi();
-	    kap.vastaaMaailmanParasLaulu(albumiKohdalla.getTunnusNro());
-	    rekisteri.lisaa(kap);
-	    hae(albumiKohdalla.getTunnusNro());
+	    try {
+	        Kappale uusi = new Kappale(albumiKohdalla.getTunnusNro());
+	        uusi = TietueDialogController.kysyTietue(null, uusi, 0);
+	        if ( uusi == null ) return;
+            uusi.rekisteroi();
+            rekisteri.korvaaTaiLisaa(uusi);
+            naytaKappaleet(albumiKohdalla);
+            tableKappaleet.selectRow(1000); // Järjestää viimeisen rivin valituksi
+	    } catch (SailoException e) {
+	        Dialogs.showMessageDialog("Lisääminen epäonnistui: " + e.getMessage());
+
+	    }	    
 	 }
 	 
 	 
 	 private void hae() {
-		 Dialogs.showMessageDialog("Haetaan albumit! Mutta ei toimi viel�");
+		 Dialogs.showMessageDialog("Haetaan albumit! Mutta ei toimi vielä");
 	 }
-	 
-	 /*
-	 Käytetään tulosta painiketta kappaleen lisäämiseen. Muokataan projektin edetessä.
+
 	 private void tulosta() {
-		 Dialogs.showMessageDialog("Tulostetaan! Mutta ei toimi viel�");
+		 Dialogs.showMessageDialog("Tulostetaan! Mutta ei toimi vielä");
 	 }
-	 */
+
 	 
 	 private void sulje() {
-		 Dialogs.showMessageDialog("Suljetaan ohjelma! Mutta ei toimi viel�");
-	 }
-	 
-	 private void poista() {
-		 Dialogs.showMessageDialog("Poistetaan albumi! Mutta ei toimi viel�");
+		 Dialogs.showMessageDialog("Suljetaan ohjelma! Mutta ei toimi vielä");
 	 }
 	 
 	 private void tallenna() {
@@ -238,18 +373,6 @@ public class AlbumitGUIController implements Initializable {
 
 
     /**
-     * Kysytään tiedoston nimi ja luetaan se
-     * @return true jos onnistui, false jos ei
-     */
-    /*
-    public boolean avaa() {
-        String uusinimi = "albumit";
-        lueTiedosto(uusinimi);                    
-        return true;
-    }
-    */
-
-    /**
      * Alustaa rekisterin lukemalla sen valitun nimisestä tiedostosta
      * @return null, jos onnistuu, muuten virhe tekstinä
      */
@@ -266,8 +389,48 @@ public class AlbumitGUIController implements Initializable {
         }
     }
     
+    /**
+     * Poistetaan kappaletaulukosta valitulla kohdalla oleva kappale
+     */
+    private void poistaKappale() {
+        int rivi = tableKappaleet.getRowNr();
+        if(rivi < 0 ) return;
+        Kappale kappale = tableKappaleet.getObject();
+        if (kappale == null) return;
+        rekisteri.poistaKappale(kappale);
+        naytaKappaleet(albumiKohdalla);
+        int kappaleita = tableKappaleet.getItems().size();
+        if (rivi >= kappaleita) rivi = kappaleita-1;
+        tableKappaleet.getFocusModel().focus(rivi);
+        tableKappaleet.getSelectionModel().select(rivi);
+    }
     
+    
+    /**
+     * Poistetaan listalta valittu albumi
+     */
+    private void poistaAlbumi() {
+        Albumi albumi = albumiKohdalla;
+        if (albumi == null) return;
+        if (!Dialogs.showQuestionDialog("Poisto", "Poistetaanko albumi: " + albumi.getNimi(), "Kyllä", "Ei"))
+            return;
+        rekisteri.poista(albumi);
+        int index = chooserAlbumit.getSelectedIndex();
+        hae(0);
+        chooserAlbumit.setSelectedIndex(index);
+    }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 }
 

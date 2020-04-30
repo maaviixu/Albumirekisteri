@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 
@@ -24,7 +25,7 @@ public class Kappaleet implements Iterable<Kappale> {
 	
 	
 	/** Taulukko kappaleista */
-	private final Collection<Kappale> alkiot		= new ArrayList<Kappale>();
+	private final List<Kappale> alkiot		= new ArrayList<Kappale>();
 	
 	
 	/**
@@ -108,6 +109,66 @@ public class Kappaleet implements Iterable<Kappale> {
         muutettu = false;	    		
 	}
 	
+	/**
+	 * Poistaa valitun kappaleen
+	 * @param kappale poistettava kappale
+	 * @return true jos löytyi poistettava tietue
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException 
+     * #import java.io.File;
+     * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale();
+     * kap1.vastaaMaailmanParasLaulu(1);
+     * Kappale kap2 = new Kappale();
+     * kap2.vastaaMaailmanParasLaulu(2);
+     * Kappale kap3 = new Kappale();
+     * kap3.vastaaMaailmanParasLaulu(3);
+     * kappaleet.lisaa(kap1);
+     * kappaleet.lisaa(kap2);
+     * kappaleet.poista(kap3) === false;
+     * kappaleet.poista(kap2) === true;
+	 * </pre>
+	 */
+	public boolean poista(Kappale kappale) {
+	    boolean ret = alkiot.remove(kappale);
+	    if (ret) muutettu = true;
+	    return ret;
+	}
+	
+	/**
+	 * Poistaa kaikki tietyn albumin kappaleet
+	 * @param tunnusNro viite siihen, mihin liittyvät tietueet poistetaan
+	 * @return montako poistettiin
+	 * @example
+	 * <pre name="test">
+	 * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale();
+     * kap1.vastaaMaailmanParasLaulu(1);
+     * Kappale kap2 = new Kappale();
+     * kap2.vastaaMaailmanParasLaulu(2);
+     * Kappale kap11 = new Kappale();
+     * kap11.vastaaMaailmanParasLaulu(1);
+     * kappaleet.lisaa(kap1);
+     * kappaleet.lisaa(kap2);
+     * kappaleet.lisaa(kap11);
+     * kappaleet.poistaAlbuminKappaleet(1) === 2;
+	 * </pre>
+	 */
+	public int poistaAlbuminKappaleet(int tunnusNro) {
+	    int n = 0;
+	    for (Iterator<Kappale> it = alkiot.iterator(); it.hasNext();) {
+	        Kappale kap = it.next();
+	        if (kap.getAlbumiNro() == tunnusNro) {
+	            it.remove();
+	            n++;
+	        }
+	    }
+	    if (n > 0) muutettu = true;
+	    return n;
+	}
+	
+	
 
     /**
      * Asettaa tiedoston perusnimen ilman tarkenninta
@@ -160,8 +221,21 @@ public class Kappaleet implements Iterable<Kappale> {
 	 * @return kappaleiteraattori
 	 * @example
 	 * <pre name="test">
-	 * 
-	 * Teepp� testit
+	 * #PACKAGEIMPORT
+     * #import java.util.*;
+	 * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale();
+     * kap1.vastaaMaailmanParasLaulu(1);
+     * Kappale kap2 = new Kappale();
+     * kap2.vastaaMaailmanParasLaulu(2);
+     * Kappale kap11 = new Kappale();
+     * kap11.vastaaMaailmanParasLaulu(1);
+     * kappaleet.lisaa(kap1);
+     * kappaleet.lisaa(kap2);
+     * kappaleet.lisaa(kap11);
+     * Iterator<Kappale> i2=kappaleet.iterator();
+     * i2.next() === kap1;
+     * i2.next() === kap2;
 	 * 
 	 * </pre>
 	 */
@@ -178,10 +252,22 @@ public class Kappaleet implements Iterable<Kappale> {
 	 * @return teitorakenne jossa viitteet l�ydettyihin kappaleisiin
 	 * @example
 	 * <pre name="test">
-	 * 
-	 * teepp� testit
-	 * 
-	 * 
+	 * #import java.util.*;
+	 * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale();
+     * kap1.vastaaMaailmanParasLaulu(1);
+     * Kappale kap2 = new Kappale();
+     * kap2.vastaaMaailmanParasLaulu(2);
+     * Kappale kap11 = new Kappale();
+     * kap11.vastaaMaailmanParasLaulu(1);
+     * kappaleet.lisaa(kap1);
+     * kappaleet.lisaa(kap2);
+     * kappaleet.lisaa(kap11);
+	 * List<Kappale> loytyneet;
+	 * loytyneet = kappaleet.annaKappaleet(3);
+	 * loytyneet.size() === 0;
+	 * loytyneet = kappaleet.annaKappaleet(1);
+	 * loytyneet.size() === 2;
 	 * </pre>
 	 */
 	public List<Kappale> annaKappaleet(int tunnusnro) {
@@ -191,6 +277,80 @@ public class Kappaleet implements Iterable<Kappale> {
 		return loydetyt;
 	}
 	
+	/**
+	 * Palauttaa albumin kappaleiden kokonaiskeston
+	 * @param id albumin id
+	 * @return kokonaiskesto
+	 * @example
+	 * <pre name="test">
+	 * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale(); 
+     * Kappale kap2 = new Kappale();
+     * Kappale kap3 = new Kappale();
+     * kap1.parse(" 1 | 6 | Jytää | 3.44 ");
+     * kap2.parse(" 2 | 7 | Jytää | 3.44 ");
+     * kap3.parse(" 3 | 6 | Jytää | 3.44 ");
+     * kappaleet.lisaa(kap1);
+     * kappaleet.lisaa(kap2);
+     * kappaleet.lisaa(kap3);
+     * kappaleet.kokonaiskesto(6) ~~~ 7.28;
+	 * </pre>
+	 */
+	public double kokonaiskesto(int id) {
+	    double kesto = 0;
+	    int kokmin = 0;
+	    int koksek = 0;
+	    for (Kappale kap : alkiot)
+	        if (kap.getAlbumiNro() == id) {
+	            kesto = kap.getKesto();
+	            String s = "" + kesto;
+	            String[] apu = s.split(Pattern.quote("."));
+	            int min = Integer.parseInt(apu[0]);
+	            int sek = Integer.parseInt(apu[1]);
+	            kokmin = kokmin + min;
+	            koksek = koksek + sek;
+	        }
+	    int jj = koksek%60;
+	    kokmin += (koksek-jj)/60;
+	    koksek = jj;
+	    
+	    return Double.parseDouble(kokmin + "." + koksek);
+	}
+	
+	
+	/**
+	 * Korvaa kappaleen tietorakenteessa. Ottaa kappaleen omistukseensa.
+	 * Etsitään samalla tunnusnumerolla oleva kappale. Jos ei löydy,
+	 * niin lisätään uutena kappaleena
+	 * @param kappale lisättävän kappaleen viite
+	 * @throws SailoException jos tietorakenne on jo täynnä
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException,CloneNotSupportedException
+     * #PACKAGEIMPORT
+     * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale(), kap2 = new Kappale(), kap3 = new Kappale();
+     * kap1.rekisteroi();
+     * kap2.rekisteroi();
+     * kap3.rekisteroi();
+     * kappaleet.getLkm() === 0;
+     * kappaleet.korvaaTaiLisaa(kap1);
+     * kappaleet.getLkm() === 1;
+     * kappaleet.korvaaTaiLisaa(kap2);
+     * kappaleet.getLkm() === 2;
+	 * </pre>
+	 */
+	public void korvaaTaiLisaa(Kappale kappale) throws SailoException {
+	    int id = kappale.getTunnusNro();
+	    for (int i = 0; i < getLkm(); i++) {
+	        if (alkiot.get(i).getTunnusNro() == id) {
+	            alkiot.set(i, kappale);
+	            muutettu = true;
+	            return;
+	        }
+	    }
+	    lisaa(kappale);
+	}
 	
 	/**
 	 * @param args ei käytössä

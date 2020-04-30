@@ -1,5 +1,6 @@
 package albumirekisteri;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,12 +25,26 @@ public class Rekisteri {
 	/**
 	 * Poistaa albumeista, artisteista ja kappaleista ne joilla on nro.
 	 * Kesken.
-	 * @param nro viitenumero , jonka mukaan poistetaan
+	 * @param albumi albumi joka poistetaan
 	 * @return montako poistettiin
 	 */
-	public int poista(@SuppressWarnings("unused") int nro) {
-		return 0;
+	public int poista(Albumi albumi) {
+		if (albumi == null) return 0;
+		int ret = albumit.poista(albumi.getTunnusNro());
+		kappaleet.poistaAlbuminKappaleet(albumi.getTunnusNro());
+		return ret;
 	}
+	
+	
+	/**
+	 * Poistaa tämän kappaleen
+	 * @param kappale poistettava kappale
+	 */
+	public void poistaKappale(Kappale kappale) {
+	    kappaleet.poista(kappale);
+	}
+	
+	
 	
 	
 	/**
@@ -48,14 +63,12 @@ public class Rekisteri {
 	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 3;
 	 * rekisteri.annaAlbumi(0) === levy1;
 	 * rekisteri.annaAlbumi(1) === levy2;
-	 * rekisteri.annaAlbumi(2) === levy1;
-	 * rekisteri.annaAlbumi(3) === levy1; #THROWS IndexOutOfBoundsException 
+	 * rekisteri.annaAlbumi(2) === levy1; 
 	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 4;
 	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 5;
 	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 6;
 	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 7;
 	 * rekisteri.lisaa(levy1); rekisteri.getAlbumit() === 8;
-	 * rekisteri.lisaa(levy1); #THROWS SailoException
 	 * </pre>
 	 */
 	public void lisaa(Albumi albumi) throws SailoException {
@@ -87,16 +100,40 @@ public class Rekisteri {
 	/**
      * Haetaan kaikki albumin kappaleet
      * @param albumi albumi jolle kappaleita haetaan
-     * @return tietorakenne jossa viitteet löydettyihin harrastuksiin
+     * @return tietorakenne jossa viitteet löydettyihin kappaleisiin
      * @example
      * <pre name="test">
-     * 
-     * TESTIT
-     * 
+     * #import java.util.*;
+     * Kappaleet kappaleet = new Kappaleet();
+     * Kappale kap1 = new Kappale();
+     * kap1.vastaaMaailmanParasLaulu(1);
+     * Kappale kap2 = new Kappale();
+     * kap2.vastaaMaailmanParasLaulu(2);
+     * Kappale kap11 = new Kappale();
+     * kap11.vastaaMaailmanParasLaulu(1);
+     * kappaleet.lisaa(kap1);
+     * kappaleet.lisaa(kap2);
+     * kappaleet.lisaa(kap11);
+     * List<Kappale> loytyneet;
+     * loytyneet = kappaleet.annaKappaleet(3);
+     * loytyneet.size() === 0;
+     * loytyneet = kappaleet.annaKappaleet(1);
+     * loytyneet.size() === 2;
      * </pre>
      */
     public List<Kappale> annaKappaleet(Albumi albumi) {      
         return kappaleet.annaKappaleet(albumi.getTunnusNro());
+    }
+    
+    /**
+     * Korvaa kappaleen tietorakenteessa. Ottaa kappaleen omistukseensa.
+     * Etsitään samalla tunnusnumerolla oleva kappale. Jos ei löydy,
+     * niin lisätään uutena kappaleena.
+     * @param kappale lisättävän kappaleen viite
+     * @throws SailoException jos tietorakenne on jo täynnä
+     */
+    public void korvaaTaiLisaa(Kappale kappale) throws SailoException {
+        kappaleet.korvaaTaiLisaa(kappale);
     }
 
 	
@@ -136,6 +173,17 @@ public class Rekisteri {
 	}
 	
 	/**
+	 * Ralauttaa hakuehtoon vastaavat viitteet
+	 * @param hakuehto hakuehto
+	 * @param k etsittävän kentän indeksi
+	 * @return tietorakenne löytyneistä albumeista
+	 * @throws SailoException jos jotakin menee väärin
+	 */
+	public Collection<Albumi> etsi(String hakuehto, int k) throws SailoException{
+	    return albumit.etsi(hakuehto, k);
+	}
+	
+	/**
 	 * Testiohjelma rekisterist�
 	 * @param args ei käytössä
 	 */
@@ -169,6 +217,25 @@ public class Rekisteri {
 	}
 
 
+    /**
+     * Korvaa albumin tietorakenteessa. Ottaa albumin omistukseensa.
+     * Etsitään samalla tunnusnumerolla oleva albumi. Jos ei löydy,
+     * niin lisätään uutena jäsenenä.
+     * @param albumi lisättävän albumin viite. Huom tietorakenne muuttuu omistajaksi
+     * @throws SailoException jos tietorakenne on jo täynnä
+     */
+    public void korvaaTaiLisaa(Albumi albumi) throws SailoException {
+        albumit.korvaaTaiLisaa(albumi);
+        
+    }
+
+    /**
+     * @param id albumin id numero
+     * @return palauttaa albumin kappaleiden kokonaiskesto 
+     */
+    public double annaKesto(int id) {
+        return kappaleet.kokonaiskesto(id);
+    }
     
 
     

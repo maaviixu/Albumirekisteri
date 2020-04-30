@@ -7,13 +7,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import fi.jyu.mit.ohj2.WildChars;
 
 /**
  * Albumirekisterin albumit, joka osaa mm. lisätä uuden albumin
  * @author maaviixu
  *
  */
-public class Albumit {
+public class Albumit implements Iterable<Albumi> {
 	
 	private static final int	MAX_ALBUMIT		     = 8;
 	private boolean             muutettu             = false;
@@ -44,23 +50,22 @@ public class Albumit {
 	 * albumit.lisaa(levy1); albumit.getLkm() === 1;
 	 * albumit.lisaa(levy2); albumit.getLkm() === 2;
 	 * albumit.lisaa(levy1); albumit.getLkm() === 3;
-	 * albumit.anna(0) === levy1;
-	 * albumit.anna(1) === levy2;
-	 * albumit.anna(2) === levy1;
-	 * albumit.anna(1) == levy1 === false;
-	 * albumit.anna(1) == levy2 === true;
-	 * albumit.anna(3) === levy1; #THROWS IndexOutOfBoundsException
 	 * albumit.lisaa(levy1); albumit.getLkm() === 4;
 	 * albumit.lisaa(levy1); albumit.getLkm() === 5;
 	 * albumit.lisaa(levy1); albumit.getLkm() === 6;
 	 * albumit.lisaa(levy1); albumit.getLkm() === 7;
 	 * albumit.lisaa(levy1); albumit.getLkm() === 8;
-	 * albumit.lisaa(levy1); #THROWS SailoException
+	 * Iterator<Albumi> alb = albumit.iterator();
+	 * alb.next() === levy1;
+	 * alb.next() === levy2;
+	 * alb.next() === levy1;
+	 * albumit.lisaa(levy1); albumit.getLkm() === 9;
+     * albumit.lisaa(levy1); albumit.getLkm() === 10;
 	 * </pre>
 	 */
 	public void lisaa(Albumi albumi) throws SailoException {
 		if (lkm >= alkiot.length) {
-		    Albumi uudet[] = new Albumi[lkm*2];
+		    Albumi uudet[] = new Albumi[lkm+20];
 		    for (int i = 0; i < alkiot.length; i++) {
 		        uudet[i] = alkiot[i];
 		    }
@@ -71,6 +76,39 @@ public class Albumit {
 		muutettu = true;
 	}
 	
+	/**
+	 * Korvaa albumin tietorakenteessa. Ottaa albumin omistukseensa.
+	 * Etsitään samalla tunnusnumerolla oleva albumi. Jos ei löydy,
+	 * niin lisätään uutena albumina.
+	 * @param albumi lisättävän albumin viite. Huom tietorakenne muuttuu omistajaksi
+	 * @throws SailoException jos tietorakenne on jo täynnä
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException,CloneNotSupportedException
+     * #PACKAGEIMPORT
+	 * Albumit albumit = new Albumit();
+     * Albumi levy1 = new Albumi(), levy2 = new Albumi();
+     * levy1.rekisteroi();
+     * levy2.rekisteroi();
+     * albumit.getLkm() === 0;
+     * albumit.korvaaTaiLisaa(levy1);
+     * albumit.getLkm() === 1;
+     * albumit.korvaaTaiLisaa(levy2);
+     * albumit.getLkm() === 2;
+	 * </pre>
+	 */
+	public void korvaaTaiLisaa(Albumi albumi) throws SailoException {
+	    int id = albumi.getTunnusNro();
+	    for (int i = 0; i < lkm; i++) {
+	        if (alkiot[i].getTunnusNro() == id) {
+	            alkiot[i] = albumi;
+	            muutettu = true;
+	            return;
+	        }
+	    }
+	    lisaa(albumi);
+	}
+	
 	
 	/**
 	 * Palauttaa viitteen i:teen albumiin
@@ -78,7 +116,7 @@ public class Albumit {
 	 * @return viite jäseneen, jonka indeksi on i
 	 * @throws IndexOutOfBoundsException jos ei ole sallitulla alueella
 	 */
-	public Albumi anna(int i) throws IndexOutOfBoundsException {
+	protected Albumi anna(int i) throws IndexOutOfBoundsException {
 		if (i < 0 || lkm <= i)
 			throw new IndexOutOfBoundsException("Laiton indeksi: " + i);
 		return alkiot[i];
@@ -88,13 +126,7 @@ public class Albumit {
 	/**
 	 * Lukee albumeiden tiedostosta. Kesken
 	 * @param tied tiedoston perusnimi
-	 * @throws SailoException jos lukeminen ep�onnistuu
-	 * @example
-	 * <pre name="test">
-	 * 
-	 * TESTIT
-	 * 
-	 * </pre>
+	 * @throws SailoException jos lukeminen epäonnistuu
 	 */
 	public void lueTiedostosta(String tied) throws SailoException {
 	    setTiedostonPerusNimi(tied);
@@ -103,8 +135,6 @@ public class Albumit {
             if ( kokoNimi == null ) throw new SailoException("Kerhon nimi puuttuu");
             String rivi = fi.readLine();
             if ( rivi == null ) throw new SailoException("Maksimikoko puuttuu");
-            // int maxKoko = Mjonot.erotaInt(rivi,10); // tehdään jotakin
-
             while ( (rivi = fi.readLine()) != null ) {
                 rivi = rivi.trim();
                 if ( "".equals(rivi) || rivi.charAt(0) == ';' ) continue;
@@ -171,13 +201,12 @@ public class Albumit {
 
     /**
 	 * Tallentaa albumeiden tiedostoon. Kesken.
-	 * @throws SailoException jos tallentaminen ep�onnistuu
+	 * @throws SailoException jos tallentaminen epäonnistuu
 	 */
 	public void tallenna() throws SailoException {
 	    if ( !muutettu ) return;
 	    File ftied = new File("albumit/albumit.dat");
 	    try ( PrintWriter fo = new PrintWriter(new FileWriter(ftied.getCanonicalPath())) ) {
-	        //fo.println(getKokoNimi());
 	        fo.println("Albumit");
 	        fo.println(alkiot.length);
 	        for (int i = 0; i < getLkm(); i++) {
@@ -195,6 +224,37 @@ public class Albumit {
 	
 	
 	/**
+	 * Poistetaa albumin jolla on valittu tunnusnro
+	 * @param id poistettavan albumin tunnusnro
+	 * @return 1 jos poistaminen onnistui, 0 jos ei löydy
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException  
+     * Albumit albumit = new Albumit(); 
+     * Albumi levy1 = new Albumi(), levy2 = new Albumi(), levy3 = new Albumi(); 
+     * levy1.rekisteroi(); levy2.rekisteroi(); levy3.rekisteroi(); 
+     * int id1 = levy1.getTunnusNro(); 
+     * albumit.lisaa(levy1); albumit.lisaa(levy2); albumit.lisaa(levy3); 
+     * albumit.poista(id1+1) === 1; 
+     * albumit.annaId(id1+1) === null; albumit.getLkm() === 2; 
+     * albumit.poista(id1) === 1; albumit.getLkm() === 1; 
+     * albumit.poista(id1+3) === 0; albumit.getLkm() === 1; 
+	 * </pre>
+	 */
+	public int poista(int id) {
+	    int ind = etsiId(id);
+	    if (ind < 0) return 0;
+	    lkm--;
+	    for (int i = ind; i < lkm; i++) 
+	        alkiot[i] = alkiot[i+1];
+	    alkiot[lkm] = null;
+	    muutettu = true;
+	    return 1;
+	}
+	
+	
+	/**
+	 * 
 	 * Palauttaa albumeiden lukumäärän.
 	 * @return albumeiden lukumäärä
 	 */
@@ -202,9 +262,151 @@ public class Albumit {
 		return lkm;
 	}
 	
+	/**
+	 * @author Viitanen
+	 * @version 29.4.2020
+	 * * @example
+     * <pre name="test">
+     * #THROWS SailoException
+     * #PACKAGEIMPORT
+     * #import java.util.*;
+     * Albumit albumit = new Albumit();
+     * Albumi levy1 = new Albumi(), levy2 = new Albumi();
+     * albumit.getLkm() === 0;
+     * albumit.lisaa(levy1); albumit.getLkm() === 1;
+     * albumit.lisaa(levy2); albumit.getLkm() === 2;
+     * albumit.lisaa(levy1); albumit.getLkm() === 3;
+     * albumit.lisaa(levy1); albumit.getLkm() === 4;
+     * albumit.lisaa(levy1); albumit.getLkm() === 5;
+     * albumit.lisaa(levy1); albumit.getLkm() === 6;
+     * albumit.lisaa(levy1); albumit.getLkm() === 7;
+     * albumit.lisaa(levy1); albumit.getLkm() === 8;
+     * Iterator<Albumi> alb = albumit.iterator();
+     * alb.next() === levy1;
+     * alb.next() === levy2;
+     * alb.next() === levy1;
+     * albumit.lisaa(levy1); albumit.getLkm() === 9;
+     * albumit.lisaa(levy1); albumit.getLkm() === 10;
+     * </pre>
+     */
+	public class AlbumitIterator implements Iterator<Albumi> {
+	    private int kohdalla = 0;
+	    
+	    @Override
+	    public boolean hasNext() {
+	        return kohdalla < getLkm();
+	    }
+	    
+	    @Override
+	    public Albumi next() throws NoSuchElementException {
+	        if ( !hasNext() ) throw new NoSuchElementException("Ei ole");
+            return anna(kohdalla++);
+	    }
+	    
+	    @Override
+	    public void remove() throws UnsupportedOperationException {
+            throw new UnsupportedOperationException("Me ei poisteta");
+        }
+	}
 	
+	/**
+	 * Palautetaan iteraattori albumeistaan
+	 * @return albumi iteraattori
+	 */
+	@Override
+	public Iterator<Albumi> iterator() {
+	    return new AlbumitIterator();
+	}
 	
+	/**
+	 * Palauttaa hakuehtoon vastaavien albumien viitteet
+	 * @param hakuehto hakuehto
+	 * @param k kentän indeksi
+	 * @return tietorakenne löytyneistä albumeista
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException
+	 * Albumit albumit = new Albumit();
+	 * Albumi albumi1 = new Albumi();
+     * albumi1.parse("1|Rokkia|Kirka");
+     * Albumi albumi2 = new Albumi();
+     * albumi2.parse("2|Jytää|Jukka");
+     * Albumi albumi3 = new Albumi();
+     * albumi3.parse("3|Folkia|Pekka");
+     * albumit.lisaa(albumi1);
+     * albumit.lisaa(albumi2);
+     * albumit.lisaa(albumi3);
+     * List<Albumi> loytyneet;
+     * loytyneet = (List<Albumi>)albumit.etsi("*j*",1);
+     * loytyneet.size() === 1;
+	 * </pre>
+	 */
+	public Collection<Albumi> etsi(String hakuehto, int k) {
+	    String ehto = "*";
+	    if ( hakuehto != null && hakuehto.length() > 0 ) ehto = hakuehto; 
+        int hk = k; 
+        if ( hk < 0 ) hk = 0;
+        Collection<Albumi> loytyneet = new ArrayList<Albumi>();
+        for (Albumi albumi : this) {
+            if (WildChars.onkoSamat(albumi.anna(hk), ehto)) loytyneet.add(albumi);
+        }
+        return loytyneet;
+	}
 	
+	/**
+	 * Etsii albumin id:n perusteella
+	 * @param id tunnusnro, jonka mukaan etsitään
+	 * @return albumi jolla etsittävä id tai null
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException
+     * Albumit albumit = new Albumit();
+     * Albumi levy1 = new Albumi(), levy2 = new Albumi(), levy3 = new Albumi();
+     * levy1.rekisteroi();
+     * levy2.rekisteroi();
+     * levy3.rekisteroi();
+     * int id1 = levy1.getTunnusNro();
+     * albumit.lisaa(levy1);
+     * albumit.lisaa(levy2);
+     * albumit.lisaa(levy3);
+     * albumit.annaId(id1) == levy1 === true;
+     * albumit.annaId(id1+1) == levy2 === true;
+     * albumit.annaId(id1+2) == levy3 === true;
+	 * </pre>
+	 */
+	public Albumi annaId(int id) {
+	    for (Albumi albumi : this) {
+	        if (id == albumi.getTunnusNro()) return albumi;
+	    }
+	    return null;
+	}
+	
+	/**
+	 * Etsii albumin id:n  perusteella
+	 * @param id tunnusnro, jonka mukaan etsitään
+	 * @return löytyneen albumin indeksi tai -1 jos ei löydy
+	 * @example
+	 * <pre name="test">
+	 * #THROWS SailoException
+     * Albumit albumit = new Albumit();
+     * Albumi levy1 = new Albumi(), levy2 = new Albumi(), levy3 = new Albumi();
+     * levy1.rekisteroi();
+     * levy2.rekisteroi();
+     * levy3.rekisteroi();
+     * int id1 = levy1.getTunnusNro();
+     * albumit.lisaa(levy1);
+     * albumit.lisaa(levy2);
+     * albumit.lisaa(levy3);
+     * albumit.etsiId(id1+1) === 1;
+     * albumit.etsiId(id1+2) === 2;
+	 * </pre>
+	 */
+	public int etsiId(int id) {
+	    for (int i = 0; i < lkm; i++) {
+	        if (id == alkiot[i].getTunnusNro()) return i;
+	    }
+	    return -1;
+	}
 	
 	
 	/**
@@ -229,6 +431,7 @@ public class Albumit {
 			
 			System.out.println("============= Albumit testi =================");
 			
+
 			for ( int i = 0; i < albumit.getLkm(); i++) {
 				Albumi albumi = albumit.anna(i);
 				System.out.println("Albumi nro: " + i);

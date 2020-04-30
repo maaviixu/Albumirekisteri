@@ -10,14 +10,14 @@ import fi.jyu.mit.ohj2.Mjonot;
  * @author maaviixu
  *
  */
-public class Kappale {
+public class Kappale implements Cloneable, Tietue {
 	
 	
 
 		private int tunnusNro;
 		private int albumiNro;
 		private String nimi;
-		private String kesto;
+		private double kesto;
 		
 		private static int seuraavaNro = 1;
 		
@@ -45,10 +45,8 @@ public class Kappale {
 		 */
 		public void vastaaMaailmanParasLaulu(int nro) {
 			albumiNro = nro;
-			nimi = "Maailman paras laulu";
-			double arpa = (Math.random()*10);
-			kesto = Double.toString(arpa);
-			
+			nimi = "Täytä nimi";
+			kesto = 0.0;						
 		}
 		
 		
@@ -109,7 +107,13 @@ public class Kappale {
 			return albumiNro;
 		}
 		
-		
+		/**
+		 * Palautetaan kappaleen kesto
+		 * @return kappaleen kesto
+		 */
+		public double getKesto() {
+		    return kesto;
+		}
 		
 		/**
 		 * Testiohjelma Kappaleelle
@@ -124,13 +128,18 @@ public class Kappale {
 		/**
 		 * Selvittää kappaleet tiedot | erotellusta merkkijonosta
 		 * @param rivi josta harrastuksen tiedot otetaan
+		 * @example
+		 * <pre name="test">
+		 * Kappale kap = new Kappale();
+         * kap.parse("      4 |       6 |      Jytää |     3.44 ");
+         * kap.toString() === "4|6|Jytää|3.44";
+		 * </pre>
 		 */
-        public void parse(String rivi) {
-            StringBuilder sb = new StringBuilder(rivi);
-            setTunnusNro(Mjonot.erota(sb, '|', getTunnusNro()));
-            albumiNro = (Mjonot.erota(sb, '|', albumiNro));
-            nimi = Mjonot.erota(sb, '|', nimi);
-            kesto = (Mjonot.erota(sb, '|', kesto));                                   
+        public void parse(String rivi) {            
+            StringBuilder sb = new StringBuilder(rivi);            
+            for (int k = 0; k < getKenttia(); k++) {
+                aseta(k, Mjonot.erota(sb, '|'));
+            }
         }
 
 
@@ -144,10 +153,156 @@ public class Kappale {
         /**
          * Palauttaa kappaleen tiedot merkkijonona, jonka voi tallentaa tiedostoon.
          * @return kappale tolppaeroteltuna merkkijonona
+         * @example
+         * <pre name="test">
+         * Kappale kap = new Kappale();
+         * kap.parse("      4 |       6 |      Jytää |     3.44 ");
+         * kap.toString() === "4|6|Jytää|3.44";
+         * </pre>
          */
         @Override
         public String toString() {
-            return "" + getTunnusNro() + "|" + albumiNro + "|" + nimi + "|" + kesto;
+            StringBuilder sb = new StringBuilder();
+            String erotin = "";
+            for (int k = 0; k < getKenttia(); k++) {
+                sb.append(erotin);
+                sb.append(anna(k));
+                erotin = "|";
+            }
+            return sb.toString();
+
+        }
+
+
+        /**
+         * @return kappaleen kenttien lukumäärä
+         */
+        @Override
+        public int getKenttia() {
+            return 4;
+        }
+
+
+        /**
+         * @return ensimmäinen käyttäjän syötettävän kentän indeksi
+         */
+        @Override
+        public int ekaKentta() {            
+            return 2;
+        }
+
+
+        /**
+         * @param k minkä kentän sisältö halutaan
+         * @return valitun kentän sisältö
+         * @example
+         * <pre name="test">
+         * Kappale kap = new Kappale();
+         * kap.parse(" 4 | 6 | Jytää | 3.44 ");
+         * kap.anna(0) === "4";
+         * kap.anna(1) === "6";
+         * kap.anna(2) === "Jytää";
+         * kap.anna(3) === "3.44";
+         * </pre>
+         */
+        @Override
+        public String anna(int k) {
+            switch (k) {
+            case 0:
+                return "" + tunnusNro;
+            case 1:
+                return "" + albumiNro;
+            case 2:
+                return "" + nimi;
+            case 3:
+                return "" + kesto;
+            default:
+                return "???";
+            }           
+        }
+
+
+        /**
+         * @param k minkä kentän kysymys halutaan 
+         * @return valitun kentän kysymysteksti
+         */
+        @Override
+        public String getKysymys(int k) {
+            switch (k) {
+                case 0:
+                    return "tunnus nro";
+                case 1:
+                    return "albumin nro";
+                case 2:
+                    return "kappaleen nimi";
+                case 3:
+                    return "kappaleen kesto";
+                default:
+                    return "???";
+            }
+        }
+        
+        /**
+         * Asetetaan valitun kentän sisältö. Palautetaan null, jos onnistuu,
+         * muuten virheteksti
+         * @param k minkä kentän sisältö asetetaan
+         * @param s asetettava sisältö merkkijonona
+         * @return null, jos ok. muuten virheteksti
+         * @example
+         * <pre name="test">
+         * Kappale kap = new Kappale();
+         * kap.aseta(3, "3.456") === "Sekunnit väärin";
+         * kap.aseta(3, "3.34") === null;
+         * </pre>
+         */
+        @Override
+        public String aseta(int k, String s) {
+            String st = s.trim();
+            StringBuilder sb = new StringBuilder(st);
+            switch (k) {
+                case 0:
+                    setTunnusNro(Mjonot.erota(sb, '&', getTunnusNro()));
+                    return null;
+                case 1:
+                    albumiNro = Mjonot.erota(sb,  '&', albumiNro);
+                    return null;
+                case 2:
+                    nimi = st;
+                    return null;
+                case 3:                                       
+                    try {
+                        int min = (int) Mjonot.erotaEx(sb, '.' , kesto);
+                        int sek = (int) Mjonot.erotaEx(sb, '.', kesto);
+                        if (min < 0) return "Minuutit väärin";
+                        if (sek < 0 || sek > 59) return "Sekunnit väärin";
+                        kesto = Double.parseDouble(st);
+                    } catch (NumberFormatException ex) {
+                        return "Kesto väärin " + ex.getMessage();
+                    }
+                    return null;
+                    
+                default:
+                    return "Väärä kentän indeksi";
+            }
+        }
+        
+        /**
+         * Tehdään identtinen klooni kappaleesta
+         * @return object kloonattu kappaleesta
+         * @example
+         * <pre name="test">
+         * #THROWS CloneNotSupportedException 
+         * Kappale kap = new Kappale();
+         * kap.parse(" 4 | 6 | Jytää | 3.44 ");
+         * Kappale kopio = kap.clone();
+         * kopio.toString() === kap.toString();
+         * kap.parse(" 1 | 2 | Rytää | 6.54 ");
+         * kopio.toString().equals(kap.toString()) === false;
+         * </pre>
+         */
+        @Override
+        public Kappale clone() throws CloneNotSupportedException {
+            return (Kappale)super.clone();
         }
 
 
